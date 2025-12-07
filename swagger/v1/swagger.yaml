@@ -1,0 +1,75 @@
+---
+openapi: 3.0.1
+info:
+  title: SmartShopping API V1
+  version: v1
+paths:
+  "/api/v1/sign_up":
+    post:
+      summary: Sign up a user
+      tags:
+      - Authentication
+      parameters: []
+      responses:
+        '201':
+          description: user created
+        '422':
+          description: invalid request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: john.doe@example.com
+                password:
+                  type: string
+                  example: '123456'
+                first_name:
+                  type: string
+                  example: John
+                last_name:
+                  type: string
+                  example: Doe
+              required:
+              - email
+              - password
+              - first_name
+              - last_name
+  "/api/v1/sign_in":
+    post:
+      summary: Sign in a user
+      tags:
+      - Authentication
+      parameters: []
+      responses:
+        '200':
+          description: user signed in
+        '401':
+          description: invalid credentials
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: john.doe@example.com
+                password:
+                  type: string
+                  example: '123456'
+              required:
+              - email
+              - password
+servers:
+- url: http://localhost:3000
+  description: Local server
+components:
+  securitySchemes:
+    Bearer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
