@@ -64,6 +64,58 @@ paths:
               required:
               - email
               - password
+  "/auth/google_oauth2":
+    get:
+      summary: Initiate Google OAuth login
+      tags:
+      - Authentication
+      responses:
+        '302':
+          description: Redirects to Google login page
+  "/auth/google_oauth2/callback":
+    get:
+      summary: Callback from Google OAuth
+      tags:
+      - Authentication
+      parameters:
+      - name: code
+        in: query
+        description: Authorization code from Google
+        schema:
+          type: string
+      - name: state
+        in: query
+        description: State parameter
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successfully authenticated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      email:
+                        type: string
+                    required:
+                    - id
+                    - name
+                    - email
+                required:
+                - token
+                - user
+        '401':
+          description: Authentication failed
 servers:
 - url: http://localhost:3000
   description: Local server

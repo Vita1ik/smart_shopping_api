@@ -31,6 +31,8 @@ gem "bootsnap", require: false
 gem 'bcrypt'
 gem 'database_cleaner'
 gem 'jwt'
+gem 'omniauth'
+gem 'omniauth-google-oauth2'
 gem 'playwright-ruby-client'
 gem 'pry-rails'
 gem 'rswag-api'
