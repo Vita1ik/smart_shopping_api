@@ -10,19 +10,151 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_12_10_210201) do
+ActiveRecord::Schema[7.2].define(version: 2025_12_11_144333) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "brands", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "slug", null: false
+    t.index ["slug"], name: "index_brands_on_slug", unique: true
+  end
+
+  create_table "brands_searches", id: false, force: :cascade do |t|
+    t.bigint "search_id", null: false
+    t.bigint "brand_id", null: false
+    t.index ["search_id", "brand_id"], name: "index_brands_searches_on_search_id_and_brand_id", unique: true
+  end
+
+  create_table "categories", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "slug", null: false
+    t.index ["slug"], name: "index_categories_on_slug", unique: true
+  end
+
+  create_table "categories_searches", id: false, force: :cascade do |t|
+    t.bigint "search_id", null: false
+    t.bigint "category_id", null: false
+    t.index ["search_id", "category_id"], name: "index_categories_searches_on_search_id_and_category_id", unique: true
+  end
+
+  create_table "categories_sources", id: false, force: :cascade do |t|
+    t.bigint "source_id", null: false
+    t.bigint "category_id", null: false
+    t.index ["source_id", "category_id"], name: "index_categories_sources_on_source_id_and_category_id", unique: true
+  end
+
+  create_table "colors", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "slug", null: false
+    t.index ["slug"], name: "index_colors_on_slug", unique: true
+  end
+
+  create_table "colors_searches", id: false, force: :cascade do |t|
+    t.bigint "search_id", null: false
+    t.bigint "color_id", null: false
+    t.index ["search_id", "color_id"], name: "index_colors_searches_on_search_id_and_color_id", unique: true
+  end
+
+  create_table "searches", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.jsonb "price_range"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_searches_on_user_id"
+  end
+
+  create_table "searches_sizes", id: false, force: :cascade do |t|
+    t.bigint "search_id", null: false
+    t.bigint "size_id", null: false
+    t.index ["search_id", "size_id"], name: "index_searches_sizes_on_search_id_and_size_id", unique: true
+  end
+
+  create_table "searches_target_audiences", id: false, force: :cascade do |t|
+    t.bigint "search_id", null: false
+    t.bigint "target_audience_id", null: false
+    t.index ["search_id", "target_audience_id"], name: "idx_searches_ta_unique", unique: true
+    t.index ["search_id"], name: "index_searches_target_audiences_on_search_id"
+    t.index ["target_audience_id"], name: "index_searches_target_audiences_on_target_audience_id"
+  end
+
+  create_table "shoes", force: :cascade do |t|
+    t.string "name", null: false
+    t.jsonb "images", default: [], null: false
+    t.bigint "price", null: false
+    t.jsonb "prev_prices"
+    t.text "product_url", null: false
+    t.bigint "brand_id", null: false
+    t.bigint "size_id", null: false
+    t.bigint "color_id", null: false
+    t.bigint "target_audience_id", null: false
+    t.bigint "source_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["brand_id"], name: "index_shoes_on_brand_id"
+    t.index ["color_id"], name: "index_shoes_on_color_id"
+    t.index ["size_id"], name: "index_shoes_on_size_id"
+    t.index ["source_id"], name: "index_shoes_on_source_id"
+    t.index ["target_audience_id"], name: "index_shoes_on_target_audience_id"
+  end
+
+  create_table "sizes", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "slug", null: false
+    t.index ["slug"], name: "index_sizes_on_slug", unique: true
+  end
+
+  create_table "sources", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "integration_type", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "target_audiences", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "slug", null: false
+    t.index ["slug"], name: "index_target_audiences_on_slug", unique: true
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "email"
     t.string "password_digest"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "first_name"
+    t.string "first_name", null: false
     t.string "last_name"
     t.string "google_uid"
+    t.string "avatar"
+    t.bigint "size_id"
+    t.bigint "target_audience_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["google_uid"], name: "index_users_on_google_uid"
+    t.index ["size_id"], name: "index_users_on_size_id"
+    t.index ["target_audience_id"], name: "index_users_on_target_audience_id"
   end
+
+  create_table "users_shoes", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "shoe_id", null: false
+    t.boolean "liked", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["shoe_id"], name: "index_users_shoes_on_shoe_id"
+    t.index ["user_id", "shoe_id"], name: "index_users_shoes_on_user_id_and_shoe_id", unique: true
+    t.index ["user_id"], name: "index_users_shoes_on_user_id"
+  end
+
+  add_foreign_key "searches", "users"
+  add_foreign_key "searches_target_audiences", "searches"
+  add_foreign_key "searches_target_audiences", "target_audiences"
+  add_foreign_key "shoes", "brands"
+  add_foreign_key "shoes", "colors"
+  add_foreign_key "shoes", "sizes"
+  add_foreign_key "shoes", "sources"
+  add_foreign_key "shoes", "target_audiences"
+  add_foreign_key "users", "sizes"
+  add_foreign_key "users", "target_audiences"
+  add_foreign_key "users_shoes", "shoes"
+  add_foreign_key "users_shoes", "users"
 end
