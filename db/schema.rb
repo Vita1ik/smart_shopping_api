@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_12_11_144333) do
+ActiveRecord::Schema[7.2].define(version: 2025_12_11_163008) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -91,7 +91,9 @@ ActiveRecord::Schema[7.2].define(version: 2025_12_11_144333) do
     t.bigint "source_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "category_id", null: false
     t.index ["brand_id"], name: "index_shoes_on_brand_id"
+    t.index ["category_id"], name: "index_shoes_on_category_id"
     t.index ["color_id"], name: "index_shoes_on_color_id"
     t.index ["size_id"], name: "index_shoes_on_size_id"
     t.index ["source_id"], name: "index_shoes_on_source_id"
@@ -149,6 +151,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_12_11_144333) do
   add_foreign_key "searches_target_audiences", "searches"
   add_foreign_key "searches_target_audiences", "target_audiences"
   add_foreign_key "shoes", "brands"
+  add_foreign_key "shoes", "categories"
   add_foreign_key "shoes", "colors"
   add_foreign_key "shoes", "sizes"
   add_foreign_key "shoes", "sources"
