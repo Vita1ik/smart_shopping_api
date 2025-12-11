@@ -1,6 +1,6 @@
 module Api
   module V1
-    class AuthController < ApplicationController
+    class AuthController < ApiController
       # POST /api/v1/sign_up
       def sign_up
         user = User.new(user_params)

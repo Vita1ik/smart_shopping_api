@@ -31,5 +31,8 @@ module SmartShoppingApi
 
     config.middleware.use ActionDispatch::Cookies
     config.middleware.use ActionDispatch::Session::CookieStore, key: '_api_session'
+    config.middleware.use ActionDispatch::Flash
+    config.middleware.use Rack::MethodOverride
+    config.middleware.use ActionDispatch::ContentSecurityPolicy::Middleware
   end
 end
