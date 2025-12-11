@@ -6,6 +6,6 @@ class Shoe < ApplicationRecord
   belongs_to :source
   belongs_to :category
 
-  has_many :user_shoes, dependent: :destroy
+  has_many :user_shoes, class_name: 'UserShoe', dependent: :destroy
   has_many :users, through: :user_shoes
 end
