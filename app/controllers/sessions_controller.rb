@@ -4,6 +4,8 @@ class SessionsController < ApplicationController
   def google_auth
     auth_info = request.env['omniauth.auth']
 
+    puts auth_info
+
     user = User.find_or_create_by(email: auth_info['info']['email']) do |u|
       u.first_name = auth_info['info']['first_name']
       u.last_name = auth_info['info']['last_name']
@@ -12,6 +14,7 @@ class SessionsController < ApplicationController
     end
 
     if user.persisted?
+      payload = { user_id: user.id, exp: 24.hours.from_now.to_i }
       token = JWT.encode(payload, Rails.application.secrets.secret_key_base)
       render json: {
         token: token,
@@ -19,7 +22,7 @@ class SessionsController < ApplicationController
         user: Presenters::User.new(user).as_json,
       }, status: :ok
     else
-      render json: { error: 'Authentication failed' }, status: 422
+      render json: { error: user.errors.full_messages }, status: 422
     end
   end
 

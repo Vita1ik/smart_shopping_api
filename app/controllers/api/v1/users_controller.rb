@@ -11,7 +11,7 @@ module Api
         if current_user.update(user_params)
           render json: Presenters::User.new(current_user).as_json, status: :ok
         else
-          render json: { errors: current_user.errors }, status: :unprocessable_entity
+          render json: { errors: current_user.errors.full_messages }, status: :unprocessable_entity
         end
       end
 
