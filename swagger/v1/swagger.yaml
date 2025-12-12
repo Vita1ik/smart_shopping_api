@@ -4,35 +4,6 @@ info:
   title: SmartShopping API V1
   version: v1
 paths:
-  "/api/v1/brands":
-    get:
-      summary: List all brands
-      tags:
-      - Brands
-      description: Returns a list of all available brands
-      security:
-      - Bearer: []
-      responses:
-        '200':
-          description: successful
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: integer
-                    name:
-                      type: string
-                    slug:
-                      type: string
-                  required:
-                  - id
-                  - name
-        '401':
-          description: unauthorized
   "/api/v1/sign_up":
     post:
       summary: Sign up a user
@@ -153,6 +124,35 @@ paths:
               required:
               - email
               - password
+  "/api/v1/brands":
+    get:
+      summary: List all brands
+      tags:
+      - Brands
+      description: Returns a list of all available brands
+      security:
+      - Bearer: []
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                    slug:
+                      type: string
+                  required:
+                  - id
+                  - name
+        '401':
+          description: unauthorized
   "/api/v1/categories":
     get:
       summary: List all categories
@@ -209,6 +209,76 @@ paths:
                   - name
         '401':
           description: unauthorized
+  "/api/v1/searches":
+    post:
+      summary: Create a new search (Scrape products)
+      tags:
+      - Searches
+      description: Initiates a scraping job based on filters and returns found products.
+      security:
+      - Bearer: []
+      parameters: []
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    title:
+                      type: string
+                    price:
+                      type: string
+                    link:
+                      type: string
+                    images:
+                      type: array
+                      items:
+                        type: string
+        '401':
+          description: unauthorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                brand_ids:
+                  type: array
+                  items:
+                    type: integer
+                  description: List of Brand IDs
+                category_ids:
+                  type: array
+                  items:
+                    type: integer
+                  description: List of Category IDs
+                color_ids:
+                  type: array
+                  items:
+                    type: integer
+                  description: List of Color IDs
+                size_ids:
+                  type: array
+                  items:
+                    type: integer
+                  description: List of Size IDs
+                target_audience_ids:
+                  type: array
+                  items:
+                    type: integer
+                  description: List of Target Audience IDs
+                price_range:
+                  type: array
+                  items:
+                    type: integer
+                  description: "[Min, Max] price"
+                  example:
+                  - 1000
+                  - 5000
   "/api/v1/sizes":
     get:
       summary: List all sizes
@@ -454,6 +524,8 @@ paths:
                   error:
                     type: string
 servers:
+- url: https://smartshoppingapi-production.up.railway.app
+  description: Production server
 - url: http://localhost:3000
   description: Local server
 components:

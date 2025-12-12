@@ -27,7 +27,15 @@ class ApiController < ActionController::API
 
   private
 
+  def render_ok(json)
+    render json:, status: :ok
+  end
+
   def render_unauthorized(message)
     render json: { errors: message }, status: :unauthorized
+  end
+
+  def render_unprocessable_entity(object)
+    render json: { errors: object.errors.full_messages }, status: :unprocessable_entity
   end
 end

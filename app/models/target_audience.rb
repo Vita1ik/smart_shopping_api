@@ -6,6 +6,11 @@ class TargetAudience < ApplicationRecord
 
   before_validation :generate_slug
 
+  def man? = slug == 'man'
+  def woman? = slug == 'woman'
+
+  private
+
   def generate_slug
     return unless name.present?
 

@@ -2,24 +2,20 @@ module Scrapers
   module Intertop
     class Scraper < Scrapers::Base::Scraper
       def run
-        page.goto('https://intertop.ua/uk-ua/shopping/catalog/men/shoes/')
-        # Click the search input
-        # page.get_by_placeholder("Пошук модних знахідок").click
+        gender = 'men'
+        gender = 'women' if target_audience&.woman?
+        page.goto("https://intertop.ua/uk-ua/shopping/catalog/#{gender}/shoes/")
 
-        # Type the text
-        # page.type('input[placeholder="Пошук модних знахідок"]', "adidas Supernova")
-        page.type('input[placeholder="Пошук модних знахідок"]', "кросівки для бігу adidas чорні")
+        query = category.name if category
+        query += " #{brand.name}" if brand
+        query += " #{color.name}" if color
 
+
+        page.type('input[placeholder="Пошук модних знахідок"]', query)
+        # sleep 3
         page.keyboard.press("Enter")
-        sleep 7
 
-        # # Wait for the search results container to appear
-        # begin
-        #   page.locator(".product-card__image").wait_for(state: "visible")
-        # rescue
-        # end
-
-        products_data = page.locator(".in-product-tile").evaluate_all(<<~JS)
+        page.locator(".in-product-tile").evaluate_all(<<~JS)
           tiles => tiles.map(tile => {
             const title = tile.querySelector(".in-product-tile__product-brand")?.textContent.trim();
             const price = (tile.querySelector(".in-product-price__actual, .in-product-price__regular")?.textContent || "").trim();
@@ -34,6 +30,12 @@ module Scrapers
       ensure
         browser&.close
       end
+
+      def brand = search.brands.first
+      # def size = search.sizes.first
+      def color = search.colors.first
+      def category = search.categories.first
+      def target_audience = search.target_audiences.first
     end
   end
 end

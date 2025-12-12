@@ -26,6 +26,8 @@ Rails.application.routes.draw do
       resources :categories, only: [:index]
       resources :colors, only: [:index]
       resources :sizes, only: [:index]
+
+      resources :searches, only: [:create]
     end
   end
 end
