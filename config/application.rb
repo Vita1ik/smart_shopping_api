@@ -30,7 +30,10 @@ module SmartShoppingApi
     config.api_only = true
 
     config.middleware.use ActionDispatch::Cookies
-    config.middleware.use ActionDispatch::Session::CookieStore, key: '_api_session'
+    config.middleware.use ActionDispatch::Session::CookieStore,
+                          key: '_smart_shopping_api_session',
+                          same_site: :lax,
+                          secure: Rails.env.production?
     config.middleware.use ActionDispatch::Flash
     config.middleware.use Rack::MethodOverride
     config.middleware.use ActionDispatch::ContentSecurityPolicy::Middleware

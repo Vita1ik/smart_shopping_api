@@ -13,6 +13,39 @@ paths:
       responses:
         '201':
           description: user created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  email:
+                    type: string
+                  first_name:
+                    type: string
+                    nullable: true
+                  last_name:
+                    type: string
+                    nullable: true
+                  size:
+                    type: object
+                    nullable: true
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      slug:
+                        type: string
+                  target_audience:
+                    type: object
+                    nullable: true
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      slug:
+                        type: string
         '422':
           description: invalid request
       requestBody:
@@ -26,13 +59,7 @@ paths:
                   example: john.doe@example.com
                 password:
                   type: string
-                  example: '123456'
-                first_name:
-                  type: string
-                  example: John
-                last_name:
-                  type: string
-                  example: Doe
+                  example: 1rwjioi3#257fJ@23456
               required:
               - email
               - password
@@ -47,6 +74,39 @@ paths:
       responses:
         '200':
           description: user signed in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  email:
+                    type: string
+                  first_name:
+                    type: string
+                    nullable: true
+                  last_name:
+                    type: string
+                    nullable: true
+                  size:
+                    type: object
+                    nullable: true
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      slug:
+                        type: string
+                  target_audience:
+                    type: object
+                    nullable: true
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      slug:
+                        type: string
         '401':
           description: invalid credentials
       requestBody:
@@ -60,10 +120,81 @@ paths:
                   example: john.doe@example.com
                 password:
                   type: string
-                  example: '123456'
+                  example: 1rwjioi3#257fJ@23456
               required:
               - email
               - password
+  "/api/v1/user":
+    get:
+      summary: Get current user profile
+      tags:
+      - Users
+      security:
+      - Bearer: []
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  email:
+                    type: string
+                  first_name:
+                    type: string
+                    nullable: true
+                  last_name:
+                    type: string
+                    nullable: true
+                  size:
+                    type: object
+                    nullable: true
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      slug:
+                        type: string
+                  target_audience:
+                    type: object
+                    nullable: true
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      slug:
+                        type: string
+        '401':
+          description: unauthorized
+    patch:
+      summary: Update current user profile
+      tags:
+      - Users
+      security:
+      - Bearer: []
+      parameters: []
+      responses:
+        '200':
+          description: successful
+        '422':
+          description: unprocessable entity
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                last_name:
+                  type: string
+                size_id:
+                  type: integer
+                target_audience_id:
+                  type: integer
   "/auth/google_oauth2":
     get:
       summary: Initiate Google OAuth login

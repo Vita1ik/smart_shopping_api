@@ -1,23 +1,17 @@
-# spec/integration/api/v1/auth_spec.rb
 require 'swagger_helper'
-require 'rails_helper'
 
-RSpec.describe 'Authentication API', type: :request do
-  path '/api/v1/sign_up' do
-    post 'Sign up a user' do
-      tags 'Authentication'
-      consumes 'application/json'
+RSpec.describe 'Api::V1::Users', type: :request do
+  # Define the path. Since it uses 'current_user', there is no {id} in the URL
+  path '/api/v1/user' do
+
+    # --- GET: Show Profile ---
+    get('Get current user profile') do
+      tags 'Users'
       produces 'application/json'
-      parameter name: :user, in: :body, schema: {
-        type: :object,
-        properties: {
-          email: { type: :string, example: 'john.doe@example.com' },
-          password: { type: :string, example: '1rwjioi3#257fJ@23456' }
-        },
-        required: %w[email password first_name last_name]
-      }
+      security [Bearer: []] # Uses the security scheme from swagger_helper
 
-      response '201', 'user created' do
+      response(200, 'successful') do
+        # Define what the JSON looks like
         schema type: :object,
                properties: {
                  email: { type: :string },
@@ -42,37 +36,42 @@ RSpec.describe 'Authentication API', type: :request do
                    }
                  }
                }
-        
-        let(:user) do
-          { email: 'john.doe@example.com', password: '1rwjioi3#257fJ@23456', first_name: 'John', last_name: 'Doe' }
-        end
+
+        # Setup data for the test
+        let(:user) { create(:user) }
+
+        # MOCK THE TOKEN: Adjust this line based on how your app generates tokens (Devise-JWT, etc)
+        let(:Authorization) { sign_in user }
+        # Or if using pure Devise without JWT in tests, you might need to mock the warden helper.
+
         run_test!
       end
 
-      response '422', 'invalid request' do
-        let(:user) { { email: 'invalid' } }
+      response(401, 'unauthorized') do
+        let(:Authorization) { 'Bearer invalid_token' }
         run_test!
       end
     end
-  end
 
-  path '/api/v1/sign_in' do
-    post 'Sign in a user' do
-      tags 'Authentication'
+    # --- PATCH: Update Profile ---
+    patch('Update current user profile') do
+      tags 'Users'
       consumes 'application/json'
       produces 'application/json'
-      parameter name: :user, in: :body, schema: {
+      security [Bearer: []]
+
+      # Define the body parameters
+      parameter name: :user_params, in: :body, schema: {
         type: :object,
         properties: {
-          email: { type: :string, example: 'john.doe@example.com' },
-          password: { type: :string, example: '1rwjioi3#257fJ@23456' }
-        },
-        required: %w[email password]
+          first_name: { type: :string },
+          last_name: { type: :string },
+          size_id: { type: :integer },
+          target_audience_id: { type: :integer }
+        }
       }
 
-      before { create(:user, email: 'john.doe@example.com', password: '1rwjioi3#257fJ@23456') }
-
-      response '200', 'user signed in' do
+      response(200, 'successful') do
         schema type: :object,
                properties: {
                  email: { type: :string },
@@ -97,13 +96,26 @@ RSpec.describe 'Authentication API', type: :request do
                    }
                  }
                }
-        
-        let(:user) { { email: 'john.doe@example.com', password: '1rwjioi3#257fJ@23456' } }
-        run_test!
+
+        let(:user) { create(:user) }
+        let(:Authorization) { sign_in user }
+
+        # The payload sent in the request
+        let(:user_params) { { first_name: 'John', last_name: 'Doe' } }
+
+        run_test! do |response|
+          data = JSON.parse(response.body)
+          expect(data['first_name']).to eq('John')
+        end
       end
 
-      response '401', 'invalid credentials' do
-        let(:user) { { email: 'wrong@example.com', password: 'wrong' } }
+      response(422, 'unprocessable entity') do
+        let(:user) { create(:user) }
+        let(:Authorization) { sign_in user }
+
+        # Send invalid data (e.g. assuming size_id must exist)
+        let(:user_params) { { size_id: 999999 } }
+
         run_test!
       end
     end

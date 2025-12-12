@@ -7,7 +7,10 @@ module Api
 
         if user.save
           token = encode_token(user.id)
-          render json: { email: user.email, token: token }, status: :created
+          render json: {
+            user: Presenters::User.new(user).as_json,
+            token: token
+          }, status: :created
         else
           render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
         end
@@ -17,9 +20,13 @@ module Api
       def sign_in
         user = User.find_by(email: params[:email])
 
-        if user&.authenticate(params[:password])
+        if user&.valid_password?(params[:password])
           token = encode_token(user.id)
-          render json: { email: user.email, token: }, status: :ok
+
+          render json: {
+            user: Presenters::User.new(user).as_json,
+            token: token
+          }, status: :ok
         else
           render json: { error: "Invalid email or password" }, status: :unauthorized
         end
@@ -27,13 +34,13 @@ module Api
 
       private
 
-      def user_params
-        params.permit(:email, :password, :first_name, :last_name)
+      def encode_token(user_id)
+        payload = { user_id:, exp: 24.hours.from_now.to_i }
+        JWT.encode(payload, Rails.application.secret_key_base)
       end
 
-      def encode_token(user_id)
-        payload = { user_id:, exp: 30.days.from_now.to_i }
-        JWT.encode(payload, Rails.application.secret_key_base)
+      def user_params
+        params.permit(:email, :password)
       end
     end
   end

@@ -12,12 +12,15 @@ Rails.application.routes.draw do
   get '/auth/:provider/callback', to: 'sessions#google_auth'
   get '/auth/failure', to: 'sessions#failure'
 
-  # Defines the root path route ("/")
-  # root "posts#index"
+  devise_for :users
+
   namespace :api do
     namespace :v1 do
       post 'sign_up', to: 'auth#sign_up'
       post 'sign_in', to: 'auth#sign_in'
+
+      resource :user, only: [:show, :update]
     end
   end
 end
+

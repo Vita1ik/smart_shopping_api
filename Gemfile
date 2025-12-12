@@ -41,6 +41,7 @@ gem 'rswag-api'
 gem 'rswag-ui'
 gem 'rswag-specs'
 gem 'sass-rails'
+gem 'annotate'
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
@@ -52,6 +53,7 @@ group :development, :test do
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
   gem 'rspec-rails', '~> 6.1'
-  gem 'factory_bot_rails', require: false
+  gem 'factory_bot_rails'
+  gem 'ffaker'
 end
 
