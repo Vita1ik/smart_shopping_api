@@ -1,6 +1,14 @@
 class Brand < ApplicationRecord
+  before_validation :generate_slug
+
   has_many :shoes
   has_and_belongs_to_many :searches
+
+  def generate_slug
+    return unless name.present?
+
+    self.slug ||= name.parameterize
+  end
 end
 
 # == Schema Information

@@ -1,6 +1,14 @@
 class Color < ApplicationRecord
   has_many :shoes
   has_and_belongs_to_many :searches
+
+  before_validation :generate_slug
+
+  def generate_slug
+    return unless name.present?
+
+    self.slug ||= name.parameterize
+  end
 end
 
 # == Schema Information

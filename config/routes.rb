@@ -20,6 +20,12 @@ Rails.application.routes.draw do
       post 'sign_in', to: 'auth#sign_in'
 
       resource :user, only: [:show, :update]
+
+      resources :brands, only: [:index]
+      resources :target_audiences, only: [:index]
+      resources :categories, only: [:index]
+      resources :colors, only: [:index]
+      resources :sizes, only: [:index]
     end
   end
 end
