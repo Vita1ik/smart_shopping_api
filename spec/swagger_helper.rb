@@ -13,6 +13,10 @@ RSpec.configure do |config|
       paths: {},
       servers: [
         {
+          url: 'https://smartshoppingapi-production.up.railway.app',
+          description: 'Production server'
+        },
+        {
           url: 'http://localhost:3000',
           description: 'Local server'
         }
