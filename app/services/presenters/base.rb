@@ -1,12 +1,10 @@
 module Presenters
-  class BasePresenter
+  class Base
     def initialize(resource)
       @resource = resource
     end
 
-    def as_json
-      raise NotImplementedError
-    end
+    def as_json = resource&.attributes
 
     private
 
