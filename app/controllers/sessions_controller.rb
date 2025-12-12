@@ -17,11 +17,9 @@ class SessionsController < ApplicationController
     if user.persisted?
       payload = { user_id: user.id, exp: 24.hours.from_now.to_i }
       token = JWT.encode(payload, Rails.application.secret_key_base)
-      render json: {
-        token: token,
-        exp: 24.hours.from_now.to_i,
-        user: Presenters::User.new(user).as_json,
-      }, status: :ok
+      frontend_url = "https://smart-shopping-frontend.netlify.app/oauth/callback?token=#{token}"
+      
+      redirect_to frontend_url, allow_other_host: true
     else
       render json: { error: user.errors.full_messages }, status: 422
     end
