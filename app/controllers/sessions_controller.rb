@@ -10,7 +10,7 @@ class SessionsController < ApplicationController
       u.first_name = auth_info['info']['first_name']
       u.last_name = auth_info['info']['last_name']
       u.google_uid = auth_info['uid']
-      u.avatar = auth_info['image']
+      u.avatar = auth_info['info']['image']
       u.password = SecureRandom.hex(10)
     end
 
