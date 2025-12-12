@@ -3,6 +3,10 @@ require 'swagger_helper'
 RSpec.describe 'Api::V1::Users', type: :request do
   # Define the path. Since it uses 'current_user', there is no {id} in the URL
   path '/api/v1/user' do
+    let(:valid_token) do
+      payload = { user_id: user.id, exp: 24.hours.from_now.to_i }
+      JWT.encode(payload, Rails.application.secret_key_base, 'HS256')
+    end
 
     # --- GET: Show Profile ---
     get('Get current user profile') do
@@ -39,9 +43,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
 
         # Setup data for the test
         let(:user) { create(:user) }
-
-        # MOCK THE TOKEN: Adjust this line based on how your app generates tokens (Devise-JWT, etc)
-        let(:Authorization) { sign_in user }
+        let(:Authorization) { "Bearer #{valid_token}" }
         # Or if using pure Devise without JWT in tests, you might need to mock the warden helper.
 
         run_test!
@@ -98,7 +100,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
                }
 
         let(:user) { create(:user) }
-        let(:Authorization) { sign_in user }
+        let(:Authorization) { "Bearer #{valid_token}" }
 
         # The payload sent in the request
         let(:user_params) { { first_name: 'John', last_name: 'Doe' } }
@@ -111,7 +113,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
 
       response(422, 'unprocessable entity') do
         let(:user) { create(:user) }
-        let(:Authorization) { sign_in user }
+        let(:Authorization) { "Bearer #{valid_token}" }
 
         # Send invalid data (e.g. assuming size_id must exist)
         let(:user_params) { { size_id: 999999 } }
