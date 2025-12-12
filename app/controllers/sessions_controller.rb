@@ -10,12 +10,13 @@ class SessionsController < ApplicationController
       u.first_name = auth_info['info']['first_name']
       u.last_name = auth_info['info']['last_name']
       u.google_uid = auth_info['uid']
+      u.avatar = auth_info['image']
       u.password = SecureRandom.hex(10)
     end
 
     if user.persisted?
       payload = { user_id: user.id, exp: 24.hours.from_now.to_i }
-      token = JWT.encode(payload, Rails.application.secrets.secret_key_base)
+      token = JWT.encode(payload, Rails.application.secret_key_base)
       render json: {
         token: token,
         exp: 24.hours.from_now.to_i,
