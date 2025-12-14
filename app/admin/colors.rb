@@ -1,4 +1,6 @@
 ActiveAdmin.register Color do
+  permit_params :name, :slug
+
   active_admin_import before_batch_import: ->(importer) {
     csv_headers = importer.headers.keys
 
