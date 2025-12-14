@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_12_12_222225) do
+ActiveRecord::Schema[7.2].define(version: 2025_12_14_203147) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -42,8 +42,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_12_12_222225) do
 
   create_table "brands", force: :cascade do |t|
     t.string "name", null: false
-    t.string "slug", null: false
-    t.index ["slug"], name: "index_brands_on_slug", unique: true
   end
 
   create_table "brands_searches", id: false, force: :cascade do |t|
@@ -54,8 +52,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_12_12_222225) do
 
   create_table "categories", force: :cascade do |t|
     t.string "name", null: false
-    t.string "slug", null: false
-    t.index ["slug"], name: "index_categories_on_slug", unique: true
   end
 
   create_table "categories_searches", id: false, force: :cascade do |t|
@@ -72,8 +68,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_12_12_222225) do
 
   create_table "colors", force: :cascade do |t|
     t.string "name", null: false
-    t.string "slug", null: false
-    t.index ["slug"], name: "index_colors_on_slug", unique: true
   end
 
   create_table "colors_searches", id: false, force: :cascade do |t|
@@ -129,8 +123,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_12_12_222225) do
 
   create_table "sizes", force: :cascade do |t|
     t.string "name", null: false
-    t.string "slug", null: false
-    t.index ["slug"], name: "index_sizes_on_slug", unique: true
   end
 
   create_table "sources", force: :cascade do |t|
@@ -142,8 +134,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_12_12_222225) do
 
   create_table "target_audiences", force: :cascade do |t|
     t.string "name", null: false
-    t.string "slug", null: false
-    t.index ["slug"], name: "index_target_audiences_on_slug", unique: true
   end
 
   create_table "users", force: :cascade do |t|

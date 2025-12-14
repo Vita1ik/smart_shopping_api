@@ -26,8 +26,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
                    nullable: true,
                    properties: {
                      id: { type: :integer },
-                     name: { type: :string },
-                     slug: { type: :string }
+                     name: { type: :string }
                    }
                  },
                  target_audience: {
@@ -35,8 +34,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
                    nullable: true,
                    properties: {
                      id: { type: :integer },
-                     name: { type: :string },
-                     slug: { type: :string }
+                     name: { type: :string }
                    }
                  }
                }
@@ -84,8 +82,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
                    nullable: true,
                    properties: {
                      id: { type: :integer },
-                     name: { type: :string },
-                     slug: { type: :string }
+                     name: { type: :string }
                    }
                  },
                  target_audience: {
@@ -93,8 +90,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
                    nullable: true,
                    properties: {
                      id: { type: :integer },
-                     name: { type: :string },
-                     slug: { type: :string }
+                     name: { type: :string }
                    }
                  }
                }

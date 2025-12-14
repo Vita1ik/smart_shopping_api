@@ -17,8 +17,7 @@ RSpec.describe 'Api::V1::Brands', type: :request do
                  type: :object,
                  properties: {
                    id: { type: :integer },
-                   name: { type: :string },
-                   slug: { type: :string }
+                   name: { type: :string }
                    # Add other fields from your Presenters::Base if needed
                  },
                  required: ['id', 'name']

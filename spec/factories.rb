@@ -3,27 +3,22 @@ FactoryBot.define do
 
   factory :brand do
     name { FFaker::Product.brand }
-    sequence(:slug) { |n| "#{name.parameterize}-#{n}" }
   end
 
   factory :category do
     name { FFaker::Product.product_name }
-    sequence(:slug) { |n| "category-#{n}" }
   end
 
   factory :color do
     name { FFaker::Color.name }
-    sequence(:slug) { |n| "#{name.parameterize}-#{n}" }
   end
 
   factory :size do
     name { rand(36..48).to_s }
-    sequence(:slug) { |n| "size-#{n}" }
   end
 
   factory :target_audience do
     name { %w[Men Women Kids Unisex].sample }
-    sequence(:slug) { |n| "audience-#{n}" }
   end
 
   factory :source do

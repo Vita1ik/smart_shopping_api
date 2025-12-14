@@ -28,8 +28,7 @@ RSpec.describe 'Authentication API', type: :request do
                    nullable: true,
                    properties: {
                      id: { type: :integer },
-                     name: { type: :string },
-                     slug: { type: :string }
+                     name: { type: :string }
                    }
                  },
                  target_audience: {
@@ -37,8 +36,7 @@ RSpec.describe 'Authentication API', type: :request do
                    nullable: true,
                    properties: {
                      id: { type: :integer },
-                     name: { type: :string },
-                     slug: { type: :string }
+                     name: { type: :string }
                    }
                  }
                }
@@ -83,8 +81,7 @@ RSpec.describe 'Authentication API', type: :request do
                    nullable: true,
                    properties: {
                      id: { type: :integer },
-                     name: { type: :string },
-                     slug: { type: :string }
+                     name: { type: :string }
                    }
                  },
                  target_audience: {
@@ -92,8 +89,7 @@ RSpec.describe 'Authentication API', type: :request do
                    nullable: true,
                    properties: {
                      id: { type: :integer },
-                     name: { type: :string },
-                     slug: { type: :string }
+                     name: { type: :string }
                    }
                  }
                }

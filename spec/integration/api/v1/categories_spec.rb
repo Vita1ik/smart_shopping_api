@@ -14,8 +14,7 @@ RSpec.describe 'Api::V1::Categories', type: :request do
                  type: :object,
                  properties: {
                    id: { type: :integer },
-                   name: { type: :string },
-                   slug: { type: :string }
+                   name: { type: :string }
                  },
                  required: ['id', 'name']
                }

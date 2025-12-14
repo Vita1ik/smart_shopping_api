@@ -34,8 +34,6 @@ paths:
                         type: integer
                       name:
                         type: string
-                      slug:
-                        type: string
                   target_audience:
                     type: object
                     nullable: true
@@ -43,8 +41,6 @@ paths:
                       id:
                         type: integer
                       name:
-                        type: string
-                      slug:
                         type: string
         '422':
           description: invalid request
@@ -95,8 +91,6 @@ paths:
                         type: integer
                       name:
                         type: string
-                      slug:
-                        type: string
                   target_audience:
                     type: object
                     nullable: true
@@ -104,8 +98,6 @@ paths:
                       id:
                         type: integer
                       name:
-                        type: string
-                      slug:
                         type: string
         '401':
           description: invalid credentials
@@ -146,8 +138,6 @@ paths:
                       type: integer
                     name:
                       type: string
-                    slug:
-                      type: string
                   required:
                   - id
                   - name
@@ -174,8 +164,6 @@ paths:
                       type: integer
                     name:
                       type: string
-                    slug:
-                      type: string
                   required:
                   - id
                   - name
@@ -201,8 +189,6 @@ paths:
                     id:
                       type: integer
                     name:
-                      type: string
-                    slug:
                       type: string
                   required:
                   - id
@@ -300,8 +286,6 @@ paths:
                       type: integer
                     name:
                       type: string
-                    slug:
-                      type: string
                   required:
                   - id
                   - name
@@ -327,8 +311,6 @@ paths:
                     id:
                       type: integer
                     name:
-                      type: string
-                    slug:
                       type: string
                   required:
                   - id
@@ -366,8 +348,6 @@ paths:
                         type: integer
                       name:
                         type: string
-                      slug:
-                        type: string
                   target_audience:
                     type: object
                     nullable: true
@@ -375,8 +355,6 @@ paths:
                       id:
                         type: integer
                       name:
-                        type: string
-                      slug:
                         type: string
         '401':
           description: unauthorized
@@ -411,8 +389,6 @@ paths:
                         type: integer
                       name:
                         type: string
-                      slug:
-                        type: string
                   target_audience:
                     type: object
                     nullable: true
@@ -420,8 +396,6 @@ paths:
                       id:
                         type: integer
                       name:
-                        type: string
-                      slug:
                         type: string
         '422':
           description: unprocessable entity
@@ -494,8 +468,6 @@ paths:
                             type: integer
                           name:
                             type: string
-                          slug:
-                            type: string
                       target_audience:
                         type: object
                         nullable: true
@@ -503,8 +475,6 @@ paths:
                           id:
                             type: integer
                           name:
-                            type: string
-                          slug:
                             type: string
         '302':
           description: Authentication failed (Redirects to failure endpoint)

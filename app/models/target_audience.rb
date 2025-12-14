@@ -4,18 +4,8 @@ class TargetAudience < ApplicationRecord
 
   has_and_belongs_to_many :searches
 
-  before_validation :generate_slug
-
-  def man? = slug == 'man'
-  def woman? = slug == 'woman'
-
-  private
-
-  def generate_slug
-    return unless name.present?
-
-    self.slug ||= name.parameterize
-  end
+  def man? = name == 'man'
+  def woman? = name == 'woman'
 end
 
 # == Schema Information
@@ -24,9 +14,4 @@ end
 #
 #  id   :bigint           not null, primary key
 #  name :string           not null
-#  slug :string           not null
-#
-# Indexes
-#
-#  index_target_audiences_on_slug  (slug) UNIQUE
 #
