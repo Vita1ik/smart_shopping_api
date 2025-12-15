@@ -16,7 +16,7 @@ module Scrapers
 
       def run
         Playwright.create(playwright_cli_executable_path: 'npx playwright') do |playwright|
-          browser = playwright.chromium.launch(headless: false)
+          browser = playwright.chromium.launch(headless: true)
           context = browser.new_context
           page = context.new_page
 
