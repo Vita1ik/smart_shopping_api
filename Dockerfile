@@ -39,7 +39,12 @@ RUN bundle install && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
     bundle exec bootsnap precompile --gemfile
 
-RUN npx playwright install chromium --with-deps
+
+ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
+
+RUN mkdir -p $PLAYWRIGHT_BROWSERS_PATH && \
+    npx playwright install chromium --with-deps && \
+    chmod -R 777 $PLAYWRIGHT_BROWSERS_PATH
 
 # Copy application code
 COPY . .
