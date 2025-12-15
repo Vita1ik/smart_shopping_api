@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_12_14_203147) do
+ActiveRecord::Schema[7.2].define(version: 2025_12_15_131048) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -82,6 +82,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_12_14_203147) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.jsonb "results"
+    t.integer "price_min"
+    t.integer "price_max"
     t.index ["user_id"], name: "index_searches_on_user_id"
   end
 
@@ -105,14 +107,14 @@ ActiveRecord::Schema[7.2].define(version: 2025_12_14_203147) do
     t.bigint "price", null: false
     t.jsonb "prev_prices"
     t.text "product_url", null: false
-    t.bigint "brand_id", null: false
-    t.bigint "size_id", null: false
-    t.bigint "color_id", null: false
-    t.bigint "target_audience_id", null: false
-    t.bigint "source_id", null: false
+    t.bigint "brand_id"
+    t.bigint "size_id"
+    t.bigint "color_id"
+    t.bigint "target_audience_id"
+    t.bigint "source_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "category_id", null: false
+    t.bigint "category_id"
     t.index ["brand_id"], name: "index_shoes_on_brand_id"
     t.index ["category_id"], name: "index_shoes_on_category_id"
     t.index ["color_id"], name: "index_shoes_on_color_id"

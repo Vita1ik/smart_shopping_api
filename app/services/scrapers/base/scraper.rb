@@ -14,6 +14,26 @@ module Scrapers
       private
 
       attr_reader :page, :browser, :search
+
+      delegate :price_max, :price_min, to: :search
+
+      def brand = search.brands.first&.name
+      def size = search.sizes.first&.name
+      def color = search.colors.first&.name
+      def category = search.categories.first&.name
+      def target_audience = search.target_audiences.first&.name
+
+      def filters
+        {
+          brand: ,
+          size: ,
+          color: ,
+          category: ,
+          target_audience: ,
+          price_min: ,
+          price_max:
+        }
+      end
     end
   end
 end

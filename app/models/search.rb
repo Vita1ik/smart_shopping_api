@@ -13,6 +13,8 @@ end
 # Table name: searches
 #
 #  id          :bigint           not null, primary key
+#  price_max   :integer
+#  price_min   :integer
 #  price_range :jsonb
 #  results     :jsonb
 #  created_at  :datetime         not null
