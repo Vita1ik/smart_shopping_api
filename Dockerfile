@@ -42,9 +42,9 @@ RUN bundle install && \
 
 ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
 
-RUN mkdir -p $PLAYWRIGHT_BROWSERS_PATH && \
+RUN mkdir -p /ms-playwright && \
     bundle exec playwright install chromium --with-deps && \
-    chmod -R 777 $PLAYWRIGHT_BROWSERS_PATH
+    chmod -R 777 /ms-playwright
 
 # Copy application code
 COPY . .
