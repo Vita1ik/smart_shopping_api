@@ -4,15 +4,13 @@ module Api
       before_action :authenticate_user!
 
       def create
-        search = Search.new(search_params)
+        search = ::Search.new(search_params)
         search.user = current_user
-        if search.valid?
-          results = Scrapers::Intertop::Scraper.new(search).run
-          search.results = results
-          search.save
-          render_ok(results)
+        if search.save
+          render_unprocessable_entity(search)
         else
-          render_unprocessable_entity(object)
+          ScrapeShoesJob.perform_async(search.id)
+          render_ok(search_id: search.id)
         end
       end
 
@@ -25,7 +23,8 @@ module Api
           :category_ids,
           :color_ids,
           :target_audience_ids,
-          price_range: []
+          :price_min,
+          :price_max
         )
       end
     end

@@ -6,7 +6,7 @@ module Scrapers
     class Scraper
       def initialize(search)
         @pw = Playwright.create(playwright_cli_executable_path: 'npx playwright')
-        @browser = @pw.playwright.chromium.launch(headless: true)
+        @browser = @pw.playwright.chromium.launch(headless: false)
         @page = browser.new_page
         @search = search
       end

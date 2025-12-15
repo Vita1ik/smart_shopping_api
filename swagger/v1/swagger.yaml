@@ -197,10 +197,11 @@ paths:
           description: unauthorized
   "/api/v1/searches":
     post:
-      summary: Create a new search (Scrape products)
+      summary: Create a new search and start scraping
       tags:
       - Searches
-      description: Initiates a scraping job based on filters and returns found products.
+      description: Creates a search record and triggers a background Sidekiq job to
+        scrape shoes.
       security:
       - Bearer: []
       parameters: []
@@ -210,20 +211,12 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    title:
-                      type: string
-                    price:
-                      type: string
-                    link:
-                      type: string
-                    images:
-                      type: array
-                      items:
-                        type: string
+                type: object
+                properties:
+                  search_id:
+                    type: integer
+        '422':
+          description: validation error
         '401':
           description: unauthorized
       requestBody:
@@ -236,35 +229,75 @@ paths:
                   type: array
                   items:
                     type: integer
-                  description: List of Brand IDs
-                category_ids:
-                  type: array
-                  items:
-                    type: integer
-                  description: List of Category IDs
-                color_ids:
-                  type: array
-                  items:
-                    type: integer
-                  description: List of Color IDs
+                  description: IDs of brands (e.g. [1, 2])
                 size_ids:
                   type: array
                   items:
                     type: integer
-                  description: List of Size IDs
+                  description: IDs of sizes
+                category_ids:
+                  type: array
+                  items:
+                    type: integer
+                  description: IDs of categories
+                color_ids:
+                  type: array
+                  items:
+                    type: integer
+                  description: IDs of colors
                 target_audience_ids:
                   type: array
                   items:
                     type: integer
-                  description: List of Target Audience IDs
-                price_range:
-                  type: array
-                  items:
-                    type: integer
-                  description: "[Min, Max] price"
-                  example:
-                  - 1000
-                  - 5000
+                  description: IDs of target audiences
+                price_min:
+                  type: integer
+                  description: Minimum price
+                  example: 1000
+                price_max:
+                  type: integer
+                  description: Maximum price
+                  example: 5000
+  "/api/v1/shoes":
+    get:
+      summary: List shoes found by a specific search
+      tags:
+      - Shoes
+      description: Returns the list of shoes scraped during a specific search session.
+      security:
+      - Bearer: []
+      parameters:
+      - name: search_id
+        in: query
+        description: The ID of the search to retrieve results for
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                    price:
+                      type: integer
+                    images:
+                      type: array
+                      items:
+                        type: string
+                  required:
+                  - id
+                  - name
+                  - price
+                  - images
   "/api/v1/sizes":
     get:
       summary: List all sizes

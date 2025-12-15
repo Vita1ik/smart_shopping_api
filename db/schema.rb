@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_12_15_131048) do
+ActiveRecord::Schema[7.2].define(version: 2025_12_15_144939) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -85,6 +85,12 @@ ActiveRecord::Schema[7.2].define(version: 2025_12_15_131048) do
     t.integer "price_min"
     t.integer "price_max"
     t.index ["user_id"], name: "index_searches_on_user_id"
+  end
+
+  create_table "searches_shoes", id: false, force: :cascade do |t|
+    t.bigint "search_id", null: false
+    t.bigint "shoe_id", null: false
+    t.index ["search_id", "shoe_id"], name: "index_searches_shoes_on_search_id_and_shoe_id", unique: true
   end
 
   create_table "searches_sizes", id: false, force: :cascade do |t|

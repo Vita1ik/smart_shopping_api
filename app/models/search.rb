@@ -6,6 +6,7 @@ class Search < ApplicationRecord
   has_and_belongs_to_many :colors
   has_and_belongs_to_many :categories
   has_and_belongs_to_many :target_audiences
+  has_and_belongs_to_many :shoes
 end
 
 # == Schema Information

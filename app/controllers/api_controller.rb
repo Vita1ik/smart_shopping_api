@@ -35,7 +35,7 @@ class ApiController < ActionController::API
     render json: { errors: message }, status: :unauthorized
   end
 
-  def render_unprocessable_entity(object)
-    render json: { errors: object.errors.full_messages }, status: :unprocessable_entity
+  def render_unprocessable_entity(object, errors: nil)
+    render json: { errors: errors || object.errors.full_messages }, status: :unprocessable_entity
   end
 end
