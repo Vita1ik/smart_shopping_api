@@ -5,15 +5,12 @@ module Scrapers
   module Base
     class Scraper
       def initialize(search)
-        @pw = Playwright.create(playwright_cli_executable_path: 'npx playwright')
-        @browser = @pw.playwright.chromium.launch(headless: false)
-        @page = browser.new_page
         @search = search
       end
 
       private
 
-      attr_reader :page, :browser, :search
+      attr_reader :search
 
       delegate :price_max, :price_min, to: :search
 
