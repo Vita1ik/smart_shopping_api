@@ -1,3 +1,5 @@
+require 'sidekiq/web'
+
 Rails.application.routes.draw do
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)
@@ -13,6 +15,14 @@ Rails.application.routes.draw do
   get '/auth/failure', to: 'sessions#failure'
 
   devise_for :users
+
+
+  Sidekiq::Web.app_url = '/'
+  authenticate :admin_user do
+    # Sidekiq::Throttled::Web.enhance_queues_tab!
+
+    mount Sidekiq::Web => '/sidekiq'
+  end
 
   namespace :api do
     namespace :v1 do
