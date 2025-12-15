@@ -16,8 +16,8 @@ RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y curl libjemalloc2 libvips postgresql-client && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
-RUN apt-get update -qq && \
-    apt-get install -y build-essential libpq-dev nodejs npm
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs
 
 # Set production environment
 ENV RAILS_ENV="production" \
