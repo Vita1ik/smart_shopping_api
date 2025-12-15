@@ -7,7 +7,8 @@ module Api
         search = ::Search.new(search_params)
         search.user = current_user
         if search.save
-          ScrapeShoesJob.perform_async(search.id)
+          Source.pluck(:name)
+                .each { ScrapeShoesJob.perform_async(search.id, _1) }
           render_ok(search_id: search.id)
         else
           render_unprocessable_entity(search)
