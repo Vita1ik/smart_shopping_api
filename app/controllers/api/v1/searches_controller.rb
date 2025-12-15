@@ -7,10 +7,10 @@ module Api
         search = ::Search.new(search_params)
         search.user = current_user
         if search.save
-          render_unprocessable_entity(search)
-        else
           ScrapeShoesJob.perform_async(search.id)
           render_ok(search_id: search.id)
+        else
+          render_unprocessable_entity(search)
         end
       end
 
