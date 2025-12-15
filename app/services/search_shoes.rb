@@ -21,7 +21,7 @@ class SearchShoes
   attr_reader :search, :source_name
 
   def perform_search(search)
-    SCRAPERS[source_name].new(search).run
+    SCRAPERS[source_name.to_sym].new(search).run
   end
 
   def create_shoes(results)
