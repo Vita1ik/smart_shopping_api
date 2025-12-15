@@ -1,76 +1,67 @@
 # syntax = docker/dockerfile:1
-
-# This Dockerfile is designed for production, not development. Use with Kamal or build'n'run by hand:
-# docker build -t my-app .
-# docker run -d -p 80:80 -p 443:443 --name my-app -e RAILS_MASTER_KEY=<value from config/master.key> my-app
-
-# Make sure RUBY_VERSION matches the Ruby version in .ruby-version
 ARG RUBY_VERSION=3.2.0
 FROM docker.io/library/ruby:$RUBY_VERSION-slim AS base
 
-# Rails app lives here
+# 1. Робоча папка
 WORKDIR /rails
 
-# Install base packages
+# 2. Встановлюємо системні пакети + Node.js v20 (потрібен для Playwright)
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y curl libjemalloc2 libvips postgresql-client && \
+    apt-get install --no-install-recommends -y curl libjemalloc2 libvips postgresql-client build-essential libpq-dev git pkg-config gnupg && \
+    curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
-    apt-get install -y nodejs
-
-# Set production environment
+# 3. Налаштування середовища
 ENV RAILS_ENV="production" \
     BUNDLE_DEPLOYMENT="1" \
     BUNDLE_PATH="/usr/local/bundle" \
-    BUNDLE_WITHOUT="development"
+    BUNDLE_WITHOUT="development" \
+    PLAYWRIGHT_BROWSERS_PATH="/ms-playwright"
 
-# Throw-away build stage to reduce size of final image
+# --- ЕТАП BUILD (Збірка гемів) ---
 FROM base AS build
 
-# Install packages needed to build gems
-RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential git libpq-dev pkg-config && \
-    rm -rf /var/lib/apt/lists /var/cache/apt/archives
-
-# Install application gems
+# Копіюємо Gemfile і встановлюємо геми
 COPY Gemfile Gemfile.lock ./
 RUN bundle install && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
-    bundle exec bootsnap precompile --gemfile \
+    bundle exec bootsnap precompile --gemfile
 
-
-ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
-
-RUN mkdir -p /ms-playwright && \
-    bundle exec playwright install chromium --with-deps && \
-    chmod -R 777 /ms-playwright
-
-# Copy application code
+# Копіюємо код програми
 COPY . .
 
-# Precompile bootsnap code for faster boot times
-RUN bundle exec bootsnap precompile app/ lib/
+# Прекомпіляція ассетів (якщо у вас є CSS/JS)
+# RUN bundle exec rails assets:precompile
 
-
-
-
-# Final stage for app image
+# --- ЕТАП FINAL (Фінальний образ) ---
 FROM base
 
-# Copy built artifacts: gems, application
+# 1. Копіюємо встановлені геми з етапу build
 COPY --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"
 COPY --from=build /rails /rails
 
-# Run and own only the runtime files as a non-root user for security
+# 2. Встановлюємо Playwright браузери (КРИТИЧНИЙ МОМЕНТ)
+# Ми робимо це у фінальному образі, щоб браузери були доступні під час роботи
+# Використовуємо bundle exec, щоб версії збігалися
+ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
+
+# 2. Встановлюємо Playwright через NPM і качаємо браузери
+# npm init -y створює пустий package.json, щоб npm не сварився
+RUN npm init -y && \
+    npm install playwright && \
+    mkdir -p $PLAYWRIGHT_BROWSERS_PATH && \
+    npx playwright install chromium --with-deps && \
+    chmod -R 777 $PLAYWRIGHT_BROWSERS_PATH
+
+# 3. Створюємо користувача (безпека)
 RUN groupadd --system --gid 1000 rails && \
     useradd rails --uid 1000 --gid 1000 --create-home --shell /bin/bash && \
     chown -R rails:rails db log storage tmp
+
 USER 1000:1000
 
-# Entrypoint prepares the database.
+# 4. Запуск
 ENTRYPOINT ["/rails/bin/docker-entrypoint"]
-
-# Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
 CMD ["./bin/rails", "server"]
