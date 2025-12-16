@@ -37,9 +37,9 @@ Rails.application.routes.draw do
       resources :colors, only: [:index]
       resources :sizes, only: [:index]
       resources :shoes, only: [:index] do
+        post :like
+        post :dislike
         collection do
-          post :like
-          post :dislike
           get  :liked
         end
       end

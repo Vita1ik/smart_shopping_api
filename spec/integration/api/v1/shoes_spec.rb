@@ -58,7 +58,7 @@ RSpec.describe 'Api::V1::Shoes', type: :request do
     end
   end
 
-  path '/api/v1/shoes/like' do
+  path '/api/v1/shoes/{shoe_id}/like' do
     post('Like a shoe') do
       tags 'Shoes'
       description 'Mark a shoe as liked and schedule price monitoring.'
@@ -71,22 +71,24 @@ RSpec.describe 'Api::V1::Shoes', type: :request do
                 type: :string,
                 required: true,
                 description: 'Bearer token'
-      parameter name: :params, in: :body, schema: {
-        type: :object,
-        properties: {
-          shoe_id: { type: :integer }
-        },
-        required: ['shoe_id']
-      }
+
+      # Changed from Body to Path parameter
+      parameter name: :shoe_id,
+                in: :path,
+                type: :integer,
+                required: true,
+                description: 'ID of the shoe to like'
 
       let(:user) { create(:user) }
       let(:Authorization) { "Bearer #{generate_token(user.id)}" }
       let(:shoe) { create(:shoe) }
       let!(:user_shoe) { create(:user_shoe, user: user, shoe: shoe) }
 
-      let(:params) { { shoe_id: shoe.id } }
+      # rswag uses the variable name to fill the path parameter
+      let(:shoe_id) { shoe.id }
 
       response(200, 'liked successfully') do
+        # Schema kept as Array based on your previous code
         schema type: :array,
                items: {
                  type: :object,
@@ -101,21 +103,19 @@ RSpec.describe 'Api::V1::Shoes', type: :request do
                }
 
         run_test! do
-          # Перевіряємо, що статус змінився в базі
           expect(user_shoe.reload.liked?).to be_truthy
-          # Перевіряємо, чи запланувався Job (якщо налаштовано Sidekiq testing)
-          # expect(SaleMonitoringJob).to have_enqueued_sidekiq_job(...)
         end
       end
 
-      response(404, 'user_shoe relation not found') do
-        let(:params) { { shoe_id: 999999 } }
+      response(404, 'shoe not found') do
+        let(:shoe_id) { 999999 }
         run_test!
       end
     end
   end
 
-  path '/api/v1/shoes/dislike' do
+  # 3. DISLIKE A SHOE (Updated to use Path Parameter)
+  path '/api/v1/shoes/{shoe_id}/dislike' do
     post('Dislike a shoe') do
       tags 'Shoes'
       description 'Remove like from a shoe.'
@@ -128,23 +128,24 @@ RSpec.describe 'Api::V1::Shoes', type: :request do
                 type: :string,
                 required: true,
                 description: 'Bearer token'
-      parameter name: :params, in: :body, schema: {
-        type: :object,
-        properties: {
-          shoe_id: { type: :integer }
-        },
-        required: ['shoe_id']
-      }
+
+      # Changed from Body to Path parameter
+      parameter name: :shoe_id,
+                in: :path,
+                type: :integer,
+                required: true,
+                description: 'ID of the shoe to dislike'
 
       let(:user) { create(:user) }
       let(:Authorization) { "Bearer #{generate_token(user.id)}" }
       let(:shoe) { create(:shoe) }
-      # Створюємо запис, який вже лайкнутий
       let!(:user_shoe) { create(:user_shoe, user: user, shoe: shoe, liked: true) }
 
-      let(:params) { { shoe_id: shoe.id } }
+      # rswag uses the variable name to fill the path parameter
+      let(:shoe_id) { shoe.id }
 
       response(200, 'disliked successfully') do
+        # Schema kept as Array based on your previous code
         schema type: :array,
                items: {
                  type: :object,
@@ -163,8 +164,8 @@ RSpec.describe 'Api::V1::Shoes', type: :request do
         end
       end
 
-      response(404, 'shoe not found in user history') do
-        let(:params) { { shoe_id: 0 } }
+      response(404, 'shoe not found') do
+        let(:shoe_id) { 999999 }
         run_test!
       end
     end

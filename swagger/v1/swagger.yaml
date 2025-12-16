@@ -334,7 +334,7 @@ paths:
                   - price
                   - images
                   - product_url
-  "/api/v1/shoes/like":
+  "/api/v1/shoes/{shoe_id}/like":
     post:
       summary: Like a shoe
       tags:
@@ -349,6 +349,12 @@ paths:
         description: Bearer token
         schema:
           type: string
+      - name: shoe_id
+        in: path
+        required: true
+        description: ID of the shoe to like
+        schema:
+          type: integer
       responses:
         '200':
           description: liked successfully
@@ -378,18 +384,8 @@ paths:
                   - images
                   - product_url
         '404':
-          description: user_shoe relation not found
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                shoe_id:
-                  type: integer
-              required:
-              - shoe_id
-  "/api/v1/shoes/dislike":
+          description: shoe not found
+  "/api/v1/shoes/{shoe_id}/dislike":
     post:
       summary: Dislike a shoe
       tags:
@@ -404,6 +400,12 @@ paths:
         description: Bearer token
         schema:
           type: string
+      - name: shoe_id
+        in: path
+        required: true
+        description: ID of the shoe to dislike
+        schema:
+          type: integer
       responses:
         '200':
           description: disliked successfully
@@ -433,17 +435,7 @@ paths:
                   - images
                   - product_url
         '404':
-          description: shoe not found in user history
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                shoe_id:
-                  type: integer
-              required:
-              - shoe_id
+          description: shoe not found
   "/api/v1/shoes/liked":
     get:
       summary: List liked shoes
