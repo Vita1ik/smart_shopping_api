@@ -9,6 +9,12 @@ RSpec.describe 'Api::V1::Searches', type: :request do
       produces 'application/json'
       security [Bearer: []]
 
+      parameter name: :Authorization,
+                in: :header,
+                type: :string,
+                required: true,
+                description: 'Bearer token'
+
       parameter name: :search_params, in: :body, schema: {
         type: :object,
         properties: {

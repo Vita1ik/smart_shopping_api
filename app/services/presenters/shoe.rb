@@ -5,7 +5,8 @@ module Presenters
         id: resource.id,
         images: resource.images,
         name: resource.name,
-        price: resource.price
+        price: resource.price,
+        product_url: resource.product_url
       }
     end
   end

@@ -5,18 +5,33 @@ class UserShoe < ApplicationRecord
   belongs_to :shoe
 
   validates :user_id, uniqueness: { scope: :shoe_id }
+
+  def discount!(new_price)
+    update!(discounted: true, current_price: new_price, prev_price: current_price)
+  end
+
+  def like!
+    update!(liked: true, current_price: shoe.price)
+  end
+
+  def dislike!
+    update!(liked: false)
+  end
 end
 
 # == Schema Information
 #
 # Table name: users_shoes
 #
-#  id         :bigint           not null, primary key
-#  liked      :boolean          default(FALSE), not null
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  shoe_id    :bigint           not null
-#  user_id    :bigint           not null
+#  id            :bigint           not null, primary key
+#  current_price :integer
+#  discounted    :boolean
+#  liked         :boolean          default(FALSE), not null
+#  prev_price    :integer
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#  shoe_id       :bigint           not null
+#  user_id       :bigint           not null
 #
 # Indexes
 #

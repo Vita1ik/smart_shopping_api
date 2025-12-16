@@ -8,6 +8,12 @@ RSpec.describe 'Api::V1::Sizes', type: :request do
       produces 'application/json'
       security [Bearer: []]
 
+      parameter name: :Authorization,
+                in: :header,
+                type: :string,
+                required: true,
+                description: 'Bearer token'
+
       response(200, 'successful') do
         schema type: :array,
                items: {

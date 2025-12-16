@@ -27,8 +27,12 @@ class ApiController < ActionController::API
 
   private
 
-  def render_ok(json)
-    render json:, status: :ok
+  def render_ok(json = nil)
+    render({ json:, status: :ok }.compact)
+  end
+
+  def render_not_found
+    render status: :not_found
   end
 
   def render_unauthorized(message)

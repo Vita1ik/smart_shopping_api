@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_12_15_144939) do
+ActiveRecord::Schema[7.2].define(version: 2025_12_16_110841) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -167,6 +167,9 @@ ActiveRecord::Schema[7.2].define(version: 2025_12_15_144939) do
     t.boolean "liked", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "discounted"
+    t.integer "current_price"
+    t.integer "prev_price"
     t.index ["shoe_id"], name: "index_users_shoes_on_shoe_id"
     t.index ["user_id", "shoe_id"], name: "index_users_shoes_on_user_id_and_shoe_id", unique: true
     t.index ["user_id"], name: "index_users_shoes_on_user_id"

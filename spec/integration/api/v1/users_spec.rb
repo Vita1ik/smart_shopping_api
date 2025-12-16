@@ -14,6 +14,12 @@ RSpec.describe 'Api::V1::Users', type: :request do
       produces 'application/json'
       security [Bearer: []] # Uses the security scheme from swagger_helper
 
+      parameter name: :Authorization,
+                in: :header,
+                type: :string,
+                required: true,
+                description: 'Bearer token'
+
       response(200, 'successful') do
         # Define what the JSON looks like
         schema type: :object,
@@ -59,6 +65,12 @@ RSpec.describe 'Api::V1::Users', type: :request do
       consumes 'application/json'
       produces 'application/json'
       security [Bearer: []]
+
+      parameter name: :Authorization,
+                in: :header,
+                type: :string,
+                required: true,
+                description: 'Bearer token'
 
       # Define the body parameters
       parameter name: :user_params, in: :body, schema: {

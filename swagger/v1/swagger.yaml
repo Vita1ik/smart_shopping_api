@@ -124,6 +124,13 @@ paths:
       description: Returns a list of all available brands
       security:
       - Bearer: []
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        description: Bearer token
+        schema:
+          type: string
       responses:
         '200':
           description: successful
@@ -150,6 +157,13 @@ paths:
       - Categories
       security:
       - Bearer: []
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        description: Bearer token
+        schema:
+          type: string
       responses:
         '200':
           description: successful
@@ -176,6 +190,13 @@ paths:
       - Colors
       security:
       - Bearer: []
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        description: Bearer token
+        schema:
+          type: string
       responses:
         '200':
           description: successful
@@ -204,7 +225,13 @@ paths:
         scrape shoes.
       security:
       - Bearer: []
-      parameters: []
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        description: Bearer token
+        schema:
+          type: string
       responses:
         '200':
           description: successful
@@ -267,6 +294,12 @@ paths:
       security:
       - Bearer: []
       parameters:
+      - name: Authorization
+        in: header
+        required: true
+        description: Bearer token
+        schema:
+          type: string
       - name: search_id
         in: query
         description: The ID of the search to retrieve results for
@@ -287,6 +320,8 @@ paths:
                       type: integer
                     name:
                       type: string
+                    product_url:
+                      type: string
                     price:
                       type: integer
                     images:
@@ -298,6 +333,171 @@ paths:
                   - name
                   - price
                   - images
+                  - product_url
+  "/api/v1/shoes/like":
+    post:
+      summary: Like a shoe
+      tags:
+      - Shoes
+      description: Mark a shoe as liked and schedule price monitoring.
+      security:
+      - Bearer: []
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        description: Bearer token
+        schema:
+          type: string
+      responses:
+        '200':
+          description: liked successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                    product_url:
+                      type: string
+                    price:
+                      type: integer
+                    images:
+                      type: array
+                      items:
+                        type: string
+                  required:
+                  - id
+                  - name
+                  - price
+                  - images
+                  - product_url
+        '404':
+          description: user_shoe relation not found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                shoe_id:
+                  type: integer
+              required:
+              - shoe_id
+  "/api/v1/shoes/dislike":
+    post:
+      summary: Dislike a shoe
+      tags:
+      - Shoes
+      description: Remove like from a shoe.
+      security:
+      - Bearer: []
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        description: Bearer token
+        schema:
+          type: string
+      responses:
+        '200':
+          description: disliked successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                    product_url:
+                      type: string
+                    price:
+                      type: integer
+                    images:
+                      type: array
+                      items:
+                        type: string
+                  required:
+                  - id
+                  - name
+                  - price
+                  - images
+                  - product_url
+        '404':
+          description: shoe not found in user history
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                shoe_id:
+                  type: integer
+              required:
+              - shoe_id
+  "/api/v1/shoes/liked":
+    get:
+      summary: List liked shoes
+      tags:
+      - Shoes
+      description: Returns list of shoes liked by the current user with price details.
+      security:
+      - Bearer: []
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        description: Bearer token
+        schema:
+          type: string
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                    product_url:
+                      type: string
+                    price:
+                      type: integer
+                    images:
+                      type: array
+                      items:
+                        type: string
+                    current_price:
+                      type: integer
+                      nullable: true
+                    prev_price:
+                      type: integer
+                      nullable: true
+                    discounted:
+                      type: integer
+                      nullable: true
+                  required:
+                  - id
+                  - name
+                  - price
+                  - images
+                  - product_url
+                  - current_price
+                  - discounted
   "/api/v1/sizes":
     get:
       summary: List all sizes
@@ -305,6 +505,13 @@ paths:
       - Sizes
       security:
       - Bearer: []
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        description: Bearer token
+        schema:
+          type: string
       responses:
         '200':
           description: successful
@@ -331,6 +538,13 @@ paths:
       - Target Audiences
       security:
       - Bearer: []
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        description: Bearer token
+        schema:
+          type: string
       responses:
         '200':
           description: successful
@@ -357,6 +571,13 @@ paths:
       - Users
       security:
       - Bearer: []
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        description: Bearer token
+        schema:
+          type: string
       responses:
         '200':
           description: successful
@@ -397,7 +618,13 @@ paths:
       - Users
       security:
       - Bearer: []
-      parameters: []
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        description: Bearer token
+        schema:
+          type: string
       responses:
         '200':
           description: successful

@@ -9,6 +9,11 @@ RSpec.describe 'Api::V1::Shoes', type: :request do
       produces 'application/json'
       security [Bearer: []]
 
+      parameter name: :Authorization,
+                in: :header,
+                type: :string,
+                required: true,
+                description: 'Bearer token'
       parameter name: :search_id,
                 in: :query,
                 type: :integer,
@@ -16,21 +21,22 @@ RSpec.describe 'Api::V1::Shoes', type: :request do
                 required: true
 
       response(200, 'successful') do
-        # 👇 Updated Schema based on your Presenter
         schema type: :array,
                items: {
                  type: :object,
                  properties: {
                    id: { type: :integer },
                    name: { type: :string },
+                   product_url: { type: :string },
                    price: { type: :integer },
                    images: { type: :array, items: { type: :string } }
                  },
-                 required: ['id', 'name', 'price', 'images']
+                 required: ['id', 'name', 'price', 'images', 'product_url']
                }
 
         let(:user) { create(:user) }
         let(:Authorization) { "Bearer #{generate_token(user.id)}" }
+        let(:request_headers) { { 'Authorization' => "Bearer #{generate_token(user.id)}" } }
 
         # Create Search and Shoe
         let(:search) { create(:search, user: user) }
@@ -47,6 +53,175 @@ RSpec.describe 'Api::V1::Shoes', type: :request do
           expect(data.first['name']).to eq('Nike Air')
           expect(data.first['price']).to eq(2500)
           expect(data.first).to have_key('images')
+        end
+      end
+    end
+  end
+
+  path '/api/v1/shoes/like' do
+    post('Like a shoe') do
+      tags 'Shoes'
+      description 'Mark a shoe as liked and schedule price monitoring.'
+      consumes 'application/json'
+      produces 'application/json'
+      security [Bearer: []]
+
+      parameter name: :Authorization,
+                in: :header,
+                type: :string,
+                required: true,
+                description: 'Bearer token'
+      parameter name: :params, in: :body, schema: {
+        type: :object,
+        properties: {
+          shoe_id: { type: :integer }
+        },
+        required: ['shoe_id']
+      }
+
+      let(:user) { create(:user) }
+      let(:Authorization) { "Bearer #{generate_token(user.id)}" }
+      let(:shoe) { create(:shoe) }
+      let!(:user_shoe) { create(:user_shoe, user: user, shoe: shoe) }
+
+      let(:params) { { shoe_id: shoe.id } }
+
+      response(200, 'liked successfully') do
+        schema type: :array,
+               items: {
+                 type: :object,
+                 properties: {
+                   id: { type: :integer },
+                   name: { type: :string },
+                   product_url: { type: :string },
+                   price: { type: :integer },
+                   images: { type: :array, items: { type: :string } }
+                 },
+                 required: ['id', 'name', 'price', 'images', 'product_url']
+               }
+
+        run_test! do
+          # Перевіряємо, що статус змінився в базі
+          expect(user_shoe.reload.liked?).to be_truthy
+          # Перевіряємо, чи запланувався Job (якщо налаштовано Sidekiq testing)
+          # expect(SaleMonitoringJob).to have_enqueued_sidekiq_job(...)
+        end
+      end
+
+      response(404, 'user_shoe relation not found') do
+        let(:params) { { shoe_id: 999999 } }
+        run_test!
+      end
+    end
+  end
+
+  path '/api/v1/shoes/dislike' do
+    post('Dislike a shoe') do
+      tags 'Shoes'
+      description 'Remove like from a shoe.'
+      consumes 'application/json'
+      produces 'application/json'
+      security [Bearer: []]
+
+      parameter name: :Authorization,
+                in: :header,
+                type: :string,
+                required: true,
+                description: 'Bearer token'
+      parameter name: :params, in: :body, schema: {
+        type: :object,
+        properties: {
+          shoe_id: { type: :integer }
+        },
+        required: ['shoe_id']
+      }
+
+      let(:user) { create(:user) }
+      let(:Authorization) { "Bearer #{generate_token(user.id)}" }
+      let(:shoe) { create(:shoe) }
+      # Створюємо запис, який вже лайкнутий
+      let!(:user_shoe) { create(:user_shoe, user: user, shoe: shoe, liked: true) }
+
+      let(:params) { { shoe_id: shoe.id } }
+
+      response(200, 'disliked successfully') do
+        schema type: :array,
+               items: {
+                 type: :object,
+                 properties: {
+                   id: { type: :integer },
+                   name: { type: :string },
+                   product_url: { type: :string },
+                   price: { type: :integer },
+                   images: { type: :array, items: { type: :string } }
+                 },
+                 required: ['id', 'name', 'price', 'images', 'product_url']
+               }
+
+        run_test! do
+          expect(user_shoe.reload.liked?).to be_falsey
+        end
+      end
+
+      response(404, 'shoe not found in user history') do
+        let(:params) { { shoe_id: 0 } }
+        run_test!
+      end
+    end
+  end
+
+  path '/api/v1/shoes/liked' do
+    get('List liked shoes') do
+      tags 'Shoes'
+      description 'Returns list of shoes liked by the current user with price details.'
+      produces 'application/json'
+      security [Bearer: []]
+
+      parameter name: :Authorization,
+                in: :header,
+                type: :string,
+                required: true,
+                description: 'Bearer token'
+
+      response(200, 'successful') do
+        schema type: :array,
+               items: {
+                 type: :object,
+                 properties: {
+                   id: { type: :integer },
+                   name: { type: :string },
+                   product_url: { type: :string },
+                   price: { type: :integer },
+                   images: { type: :array, items: { type: :string } },
+                   current_price: { type: :integer, nullable: true },
+                   prev_price: { type: :integer, nullable: true },
+                   discounted: { type: :integer, nullable: true }
+                 },
+                 required: ['id', 'name', 'price', 'images', 'product_url', 'current_price', 'discounted']
+               }
+
+        let(:user) { create(:user) }
+        let(:Authorization) { "Bearer #{generate_token(user.id)}" }
+        let(:shoe) { create(:shoe, name: 'Adidas Yeezy', price: 5000) }
+
+        # Створюємо лайкнутий запис із цінами
+        let!(:user_shoe) do
+          create(:user_shoe,
+                 user: user,
+                 shoe: shoe,
+                 liked: true,
+                 discounted: true,
+                 current_price: 4500,
+                 prev_price: 5000)
+        end
+
+        run_test! do |response|
+          data = JSON.parse(response.body)
+          item = data.first
+
+          expect(item['name']).to eq('Adidas Yeezy')
+          expect(item['current_price']).to eq(4500)
+          expect(item['prev_price']).to eq(5000)
         end
       end
     end

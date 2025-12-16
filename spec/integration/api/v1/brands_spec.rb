@@ -10,6 +10,12 @@ RSpec.describe 'Api::V1::Brands', type: :request do
       produces 'application/json'
       security [Bearer: []] # Locks the endpoint in Swagger UI
 
+      parameter name: :Authorization,
+                in: :header,
+                type: :string,
+                required: true,
+                description: 'Bearer token'
+
       # Define the "List" response structure
       response(200, 'successful') do
         schema type: :array,
