@@ -42,6 +42,7 @@ Rails.application.routes.draw do
           post :dislike
           get  :liked
         end
+      end
 
       resources :searches, only: [:create]
     end
