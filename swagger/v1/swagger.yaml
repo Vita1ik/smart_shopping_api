@@ -488,8 +488,7 @@ paths:
                       type: integer
                       nullable: true
                     discounted:
-                      type: integer
-                      nullable: true
+                      type: boolean
                   required:
                   - id
                   - name

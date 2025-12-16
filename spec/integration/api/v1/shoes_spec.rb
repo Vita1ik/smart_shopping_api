@@ -195,7 +195,7 @@ RSpec.describe 'Api::V1::Shoes', type: :request do
                    images: { type: :array, items: { type: :string } },
                    current_price: { type: :integer, nullable: true },
                    prev_price: { type: :integer, nullable: true },
-                   discounted: { type: :integer, nullable: true }
+                   discounted: { type: :boolean }
                  },
                  required: ['id', 'name', 'price', 'images', 'product_url', 'current_price', 'discounted']
                }
