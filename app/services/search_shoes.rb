@@ -30,7 +30,7 @@ class SearchShoes
     category_id = search.category_ids&.first
     color_id = search.color_ids&.first
     target_audience_id = search.target_audience_ids&.first
-    source_id = Source.find_by(name: source_name)
+    source = Source.find_by(name: source_name)
 
     results.each do |result|
       shoe = Shoe.new(
@@ -39,7 +39,7 @@ class SearchShoes
         price: result['price']&.gsub(/\D/, '')&.to_i,
         product_url: result['link'],
         images: result['images'] || [result['image']],
-        source_id:
+        source:
       )
       shoe.searches = (shoe.searches || []) << search
       shoe.save

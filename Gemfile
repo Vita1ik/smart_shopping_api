@@ -29,6 +29,7 @@ gem "bootsnap", require: false
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin Ajax possible
 # gem "rack-cors"
 gem 'activeadmin'
+gem 'activeadmin-searchable_select'
 gem 'active_admin_import'
 gem 'bcrypt'
 gem 'database_cleaner'

@@ -13,6 +13,13 @@ class Shoe < ApplicationRecord
   validates :images, :name, :price, :product_url, presence: true
 
   scope :by_search_id, ->(search_id) { joins(:searches_shoes).where(searches_shoes: { search_id: }) }
+  scope :by_source_name, ->(name) { joins(:source).where(sources: { name: }) }
+
+  def self.ransackable_scopes(_auth_object = nil)
+    %i[
+      by_source_name
+    ]
+  end
 end
 
 # == Schema Information
