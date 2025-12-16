@@ -5,7 +5,7 @@ describe Scrapers::Miraton::Scraper do
 
   let(:brand) { create(:brand, name: 'Nike') }
   let(:size) { create(:size, name: '42') }
-  let(:color) { create(:color, name: 'червоний') }
+  let(:color) { create(:color, name: 'Білий') }
   let(:category) { create(:category, name: 'кросівки') }
   let(:target_audience) { create(:target_audience, name: 'men') }
 
