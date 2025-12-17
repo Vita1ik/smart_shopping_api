@@ -40,9 +40,9 @@ module Api
         user_shoes = UserShoe.where(user_id: current_user.id, liked: true).includes(:shoe)
         result = user_shoes.map do
           Presenters::Shoe.new(_1.shoe).as_json.merge(
-            current_price: user_shoes.current_price,
-            prev_price: user_shoes.prev_price,
-            discounted: user_shoes.prev_price
+            current_price: _1.current_price,
+            prev_price: _1.prev_price,
+            discounted: _1.discounted
           )
         end
         render_ok(result)
