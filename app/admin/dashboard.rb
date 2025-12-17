@@ -62,7 +62,7 @@ ActiveAdmin.register_page "Dashboard" do
       column do
         div class: "kpi-card" do
           # Середня ціна взуття (ділимо на 100, бо cents)
-          avg_price = Shoe.average(:price).to_f / 100
+          avg_price = Shoe.average(:price)
           div number_to_currency(avg_price, unit: "₴", precision: 0), class: "kpi-value"
           div "Середня ціна товару", class: "kpi-label"
         end
@@ -102,21 +102,16 @@ ActiveAdmin.register_page "Dashboard" do
         end
       end
 
-      # Останні пошуки (Таблиця)
       column span: 2 do
         div class: "chart-container" do
-          h3 "Останні пошукові запити", class: "panel-title"
-
-          table_for Search.order(created_at: :desc).limit(8) do
-            column("Дата") { |search| search.created_at.strftime("%d.%m %H:%M") }
-            column("Користувач") { |search| link_to(search.user.email, admin_user_path(search.user)) }
-            column("Фільтри") do |search|
-              # Форматування цінового діапазону для зручності
-              min = search.price_min ? "#{search.price_min}₴" : "0"
-              max = search.price_max ? "#{search.price_max}₴" : "∞"
-              span "#{min} - #{max}", class: "status_tag yes" # active_admin style tag
-            end
-          end
+          h3 "Активність магазинів (додано взуття за останні 7 днів)", class: "panel-title"
+          # Цей графік покаже, якщо якийсь магазин "впав" в нуль
+          data = Shoe.where('shoes.created_at > ?', 7.days.ago)
+                     .joins(:source)
+                     .group('sources.name')
+                     .group_by_day('shoes.created_at')
+                     .count
+          div line_chart data, height: "300px", legend: "bottom"
         end
       end
     end
@@ -127,7 +122,7 @@ ActiveAdmin.register_page "Dashboard" do
         div class: "chart-container" do
           h3 "Середня ціна взуття по магазинах", class: "panel-title"
           # Рахуємо середню ціну, ділимо на 100 (бо в базі копійки), сортуємо
-          data = Shoe.joins(:source).group('sources.name').average('price / 100.0').sort_by { |_k, v| v }.reverse
+          data = Shoe.joins(:source).group('sources.name').average('price').sort_by { |_k, v| v }.reverse
           div bar_chart data, prefix: "₴", height: "300px", colors: ["#6366f1"]
         end
       end
@@ -142,22 +137,6 @@ ActiveAdmin.register_page "Dashboard" do
           else
             div "Немає даних про розміри", style: "padding: 20px; text-align: center; color: #999;"
           end
-        end
-      end
-    end
-
-    columns do
-      # Графік 3: Моніторинг парсерів (хто що додав за тиждень)
-      column span: 2 do
-        div class: "chart-container" do
-          h3 "Активність магазинів (додано взуття за останні 7 днів)", class: "panel-title"
-          # Цей графік покаже, якщо якийсь магазин "впав" в нуль
-          data = Shoe.where('shoes.created_at > ?', 7.days.ago)
-                     .joins(:source)
-                     .group('sources.name')
-                     .group_by_day('shoes.created_at')
-                     .count
-          div line_chart data, height: "300px", legend: "bottom"
         end
       end
     end
