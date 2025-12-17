@@ -19,7 +19,7 @@ module Api
           SaleMonitoringJob.perform_in(12.hours, user_shoe.id)
           render_ok
         else
-          render_not_found
+          render_not_found(errors: 'User shoe not found')
         end
       end
 
@@ -31,7 +31,7 @@ module Api
           user_shoe.dislike!
           render_ok
         else
-          render_not_found
+          render_not_found(errors: 'User shoe not found')
         end
       end
 

@@ -27,7 +27,7 @@ RSpec.describe SearchShoes do
     described_class::SCRAPERS.keys.each { |name| create(:source, name:)  }
   end
 
-  subject { described_class.new(search, :rozetka) }
+  subject { described_class.new(search, :answear) }
 
   it { subject.call; binding.pry }
 

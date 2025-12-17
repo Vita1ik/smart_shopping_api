@@ -43,6 +43,7 @@ class SearchShoes
       )
       shoe.searches = (shoe.searches || []) << search
       shoe.save
+      UserShoe.create(shoe_id: shoe.id, user_id: search.user_id, current_price: shoe.price)
     end
   end
 end

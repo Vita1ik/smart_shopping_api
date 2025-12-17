@@ -173,3 +173,119 @@
   color: #dc2626;
 }
 .aa-btn.delete:hover { background: #fef2f2; border-color: #f87171; }
+
+/* --- User Grid (10 Columns) --- */
+.active_admin .index_grid .aa-user-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 12px 4px;
+  height: 100%;
+  min-height: 110px; /* ВАЖЛИВО: Захист від зникнення контенту */
+  position: relative;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.active_admin .index_grid .aa-user-card:hover {
+  border-color: #3b82f6;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* Avatar Wrapper */
+.aa-user-avatar-wrapper {
+  position: relative;
+  display: flex; /* Flex допомагає центрувати контент */
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  margin-bottom: 8px;
+  width: 50px;
+  height: 50px;
+}
+
+.aa-user-img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #f3f4f6;
+  display: block; /* Забирає зайві відступи */
+}
+
+.aa-user-initials {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: #eff6ff;
+  color: #3b82f6;
+  display: flex; /* Flex потрібен для центрування букв */
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 20px;
+  border: 2px solid #dbeafe;
+  box-sizing: border-box;
+}
+
+/* Email Text Style */
+.aa-user-info {
+  width: 100%;
+  text-align: center;
+  margin-bottom: 8px;
+  padding: 0 4px;
+}
+
+.aa-user-email {
+  font-size: 10px;
+  color: #374151;
+  text-decoration: none;
+  font-weight: 500;
+  display: block;
+  text-align: center;
+}
+
+.aa-user-email:hover {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+/* Button Style */
+.aa-user-view-btn {
+  display: block;
+  width: 80%;
+  background: #f8fafc;
+  color: #64748b;
+  text-align: center;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 4px 0;
+  border-radius: 4px;
+  text-decoration: none;
+  border: 1px solid #e2e8f0;
+  margin-top: 4px;
+}
+
+.aa-user-view-btn:hover {
+  background: #2563eb;
+  color: #fff;
+  border-color: #2563eb;
+}
+
+/* Status Dot */
+.aa-user-status {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  background-color: #10b981;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  z-index: 5;
+}
