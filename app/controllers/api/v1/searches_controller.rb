@@ -19,13 +19,13 @@ module Api
 
       def search_params
         params.permit(
-          :size_ids,
-          :brand_ids,
-          :category_ids,
-          :color_ids,
-          :target_audience_ids,
           :price_min,
-          :price_max
+          :price_max,
+          size_ids: [],
+          brand_ids: [],
+          category_ids: [],
+          color_ids: [],
+          target_audience_ids: []
         )
       end
     end
