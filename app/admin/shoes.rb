@@ -15,7 +15,7 @@ ActiveAdmin.register Shoe do
           # Посилання на всю площу хедера
           link_to admin_shoe_path(shoe), class: "aa-shoe-link-overlay" do; end
 
-          div number_to_currency(shoe.price / 100.0, unit: "₴", precision: 0), class: "aa-shoe-price-badge"
+          div number_to_currency(shoe.price, unit: "₴", precision: 0), class: "aa-shoe-price-badge"
 
           image_url = shoe.images&.first
           if image_url.present?
