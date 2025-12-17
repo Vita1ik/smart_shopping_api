@@ -59,6 +59,8 @@
   width: 100%;
   height: 100%;
   object-fit: cover; /* Заповнює блок, обрізаючи зайве */
+  position: relative;
+  z-index: 1;
 }
 
 /* Стиль для заглушки "No Photo" */
@@ -84,14 +86,14 @@
   border-radius: 20px;
   font-weight: 700;
   font-size: 13px;
-  z-index: 2;
+  z-index: 3;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .aa-shoe-link-overlay {
   position: absolute;
   inset: 0;
-  z-index: 1;
+  z-index: 2;
 }
 
 /* --- Body Content (Stretches) --- */

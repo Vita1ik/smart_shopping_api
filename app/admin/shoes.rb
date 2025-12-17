@@ -19,14 +19,9 @@ ActiveAdmin.register Shoe do
 
           image_url = shoe.images&.first
           if image_url.present?
-            # Якщо зображення не завантажиться, спрацює onerror і покаже заглушку
-            image_tag image_url,
-                      loading: "lazy",
-                      class: "aa-shoe-image",
-                      onerror: "this.style.display='none';this.nextElementSibling.style.display='flex';"
-            div class: "aa-shoe-fallback", style: "display: none;" do
-              span "No Photo"
-            end
+            img src: image_url,
+                loading: "lazy",
+                class: "aa-shoe-image"
           else
             div class: "aa-shoe-fallback" do
               span "No Photo"
