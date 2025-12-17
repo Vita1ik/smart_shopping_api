@@ -52,6 +52,7 @@ GEM
       activerecord-import (>= 0.27)
       rchardet (>= 1.6)
       rubyzip (>= 1.2)
+    active_admin_theme (1.1.4)
     activeadmin (3.3.0)
       arbre (~> 1.2, >= 1.2.1)
       csv
@@ -495,6 +496,7 @@ PLATFORMS
 
 DEPENDENCIES
   active_admin_import
+  active_admin_theme
   activeadmin
   activeadmin-searchable_select
   annotate

@@ -30,6 +30,7 @@ gem "bootsnap", require: false
 # gem "rack-cors"
 gem 'activeadmin'
 gem 'activeadmin-searchable_select'
+gem 'active_admin_theme'
 gem 'active_admin_import'
 gem 'bcrypt'
 gem 'database_cleaner'
