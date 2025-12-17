@@ -153,7 +153,11 @@ module Scrapers
     
             const link = titleElement ? titleElement.href : "";
     
-            const image = imgElement ? (imgElement.src || imgElement.dataset.src) : "";
+            let image = imgElement ? (imgElement.src || imgElement.dataset.src) : "";
+            
+            if (image.startsWith("/upload")) {
+              image = "https://www.miraton.ua" + image;
+            }
     
             return { title, price, link, image };
           })

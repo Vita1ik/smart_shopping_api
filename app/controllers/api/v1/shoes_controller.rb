@@ -37,7 +37,7 @@ module Api
 
       # get
       def liked
-        user_shoes = UserShoe.where(user_id: current_user.id, liked: true).includes(:shoes)
+        user_shoes = UserShoe.where(user_id: current_user.id, liked: true).includes(:shoe)
         result = user_shoes.map do
           Presenters::Shoe.new(_1.shoe).as_json.merge(
             current_price: user_shoes.current_price,

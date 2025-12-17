@@ -1,6 +1,4 @@
 ActiveAdmin.register Search do
-  menu parent: "Analytics", priority: 2
-
   # Оптимізація SQL запитів (N+1)
   includes :user, :brands, :categories, :sizes, :target_audiences
 

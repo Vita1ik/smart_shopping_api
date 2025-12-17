@@ -107,14 +107,14 @@ ActiveAdmin.register User do
                 div style: "border: 1px solid #eee; border-radius: 6px; overflow: hidden; text-align: center;" do
                   link_to admin_shoe_path(shoe) do
                     if shoe.images&.first
-                      image_tag shoe.images.first, style: "width: 100%; height: 80px; object-fit: cover;"
+                      img shoe.images.first, style: "width: 100%; height: 80px; object-fit: cover;"
                     else
                       div "No Img", style: "height: 80px; line-height: 80px; background: #f9f9f9; color: #ccc;"
                     end
                   end
                   div style: "padding: 5px; font-size: 11px;" do
                     div shoe.brand&.name, style: "color: #888; text-transform: uppercase; font-size: 9px;"
-                    div number_to_currency(shoe.price / 100.0, unit: "₴", precision: 0), style: "font-weight: bold;"
+                    div number_to_currency(shoe.price, unit: "₴", precision: 0), style: "font-weight: bold;"
                   end
                 end
               end
