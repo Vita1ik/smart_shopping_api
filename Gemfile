@@ -32,6 +32,8 @@ gem 'activeadmin'
 gem 'activeadmin-searchable_select'
 gem 'active_admin_theme'
 gem 'active_admin_import'
+gem "chartkick"
+gem "groupdate"
 gem 'bcrypt'
 gem 'database_cleaner'
 gem 'devise'
