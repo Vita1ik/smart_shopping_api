@@ -89,17 +89,17 @@ ActiveAdmin.register Search do
     # Відображення знайденого взуття (через асоціацію shoes)
     panel "Associated Shoes Results (#{search.shoes.count})" do
       table_for search.shoes.includes(:brand) do
-        column id
+        column :id
         column :image do |shoe|
           if shoe.images&.first
-            image_tag shoe.images.first, width: 50, height: 50, style: "object-fit: cover; border-radius: 4px;"
+            img src: shoe.images.first, style: "width: 100px; border-radius: 8px;"
           end
         end
         column :name do |shoe|
           link_to shoe.name, admin_shoe_path(shoe)
         end
         column :product_url do |shoe|
-          link_to shoe.product_url
+          link_to shoe.source.name, shoe.product_url
         end
         column :brand
         column :category

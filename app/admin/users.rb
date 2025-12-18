@@ -20,8 +20,6 @@ ActiveAdmin.register User do
         div class: "aa-user-info" do
           link_to truncate(user.first_name, length: 15), admin_user_path(user), class: "aa-user-email"
         end
-
-        link_to "Show", admin_user_path(user), class: "aa-user-view-btn"
       end
     end
   end
