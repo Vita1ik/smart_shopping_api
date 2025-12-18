@@ -3,6 +3,10 @@ module Api
     class SearchesController < ApiController
       before_action :authenticate_user!
 
+      def index
+        render_ok(current_user.searches)
+      end
+
       def create
         search = ::Search.new(search_params)
         search.user = current_user

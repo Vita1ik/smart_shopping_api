@@ -5,37 +5,22 @@ ActiveAdmin.register User do
                 :avatar, :size_id, :target_audience_id
 
   ActiveAdmin.register User do
-    index as: :grid, columns: 10 do |user|
+    index as: :grid, columns: 8 do |user|
       div class: "aa-user-card" do
-
-        # --- AVATAR SECTION ---
-        link_to admin_user_path(user), class: "aa-user-avatar-wrapper" do
-          # Обчислюємо ініціали заздалегідь
-          initials = (user.first_name&.first || user.email.first).upcase
-
+        div class: "aa-user-avatar-wrapper" do
           if user.avatar.present?
-            # Спроба 1: Показуємо картинку.
-            # Якщо помилка (onerror) -> ховаємо картинку (display='none') і показуємо сусідній div (display='flex')
-            img user.avatar,
-                     class: "aa-user-img",
-                     loading: "lazy"
+            img src: user.avatar, class: "aa-user-img"
           else
-            # Спроба 2: Якщо в базі немає url, одразу показуємо ініціали
-            div initials, class: "aa-user-initials"
-          end
-
-          # Зелений статус-індикатор
-          if user.liked_shoes.any? || user.searches.any?
-            div class: "aa-user-status active", title: "Active User"
+            div class: "aa-user-initials" do
+              span user.email.first.upcase
+            end
           end
         end
 
-        # --- INFO SECTION ---
         div class: "aa-user-info" do
-          link_to truncate(user.email, length: 18), admin_user_path(user), class: "aa-user-email", title: user.email
+          link_to truncate(user.first_name, length: 15), admin_user_path(user), class: "aa-user-email"
         end
 
-        # --- BUTTON ---
         link_to "Show", admin_user_path(user), class: "aa-user-view-btn"
       end
     end
@@ -105,14 +90,13 @@ ActiveAdmin.register User do
             div style: "display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; max-height: 400px; overflow-y: auto; padding: 10px;" do
               user.liked_shoes.includes(:brand).each do |shoe|
                 div style: "border: 1px solid #eee; border-radius: 6px; overflow: hidden; text-align: center;" do
-                  link_to admin_shoe_path(shoe) do
-                    if shoe.images&.first
-                      img shoe.images.first, style: "width: 100%; height: 80px; object-fit: cover;"
-                    else
-                      div "No Img", style: "height: 80px; line-height: 80px; background: #f9f9f9; color: #ccc;"
-                    end
+                  if shoe.images&.first
+                    img src: shoe.images.first, style: "width: 100px; border-radius: 8px;"
+                  else
+                    div "No Img", style: "height: 80px; line-height: 80px; background: #f9f9f9; color: #ccc;"
                   end
                   div style: "padding: 5px; font-size: 11px;" do
+                    div link_to shoe.name, admin_shoe_path(shoe)
                     div shoe.brand&.name, style: "color: #888; text-transform: uppercase; font-size: 9px;"
                     div number_to_currency(shoe.price, unit: "₴", precision: 0), style: "font-weight: bold;"
                   end

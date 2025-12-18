@@ -6,7 +6,7 @@ describe Scrapers::Intertop::Scraper do
   let(:brand) { create(:brand, name: 'Nike') }
   let(:size) { create(:size, name: '42') }
   let(:color) { create(:color, name: 'червоний') }
-  let(:category) { create(:category, name: 'кросівки') }
+  let(:category) { create(:category, name: 'Кросівки') }
   let(:target_audience) { create(:target_audience, name: 'men') }
 
   let(:search) do

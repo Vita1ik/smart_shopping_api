@@ -16,15 +16,17 @@ module Scrapers
       def run
         Playwright.create(playwright_cli_executable_path: 'npx playwright') do |playwright|
           browser = playwright.chromium.launch(
-            headless: true,
+            headless: false,
             args: [
+              '--headless=new',
               '--disable-blink-features=AutomationControlled',
               '--no-sandbox',
               '--disable-setuid-sandbox',
               '--disable-infobars',
               '--window-position=0,0',
               '--ignore-certificate-errors',
-              '--ignore-certificate-errors-spki-list'
+              '--ignore-certificate-errors-spki-list',
+              '--start-maximized'
             ]
           )
 
@@ -35,10 +37,9 @@ module Scrapers
             timezoneId: 'Europe/Kiev',
             permissions: ['geolocation'],
             extraHTTPHeaders: {
-              'Accept-Language' => 'uk-UA,uk;q=0.9,en-US;q=0.8,en;q=0.7',
-              'sec-ch-ua' => '"Google Chrome";v="123", "Not:A-Brand";v="8", "Chromium";v="123"',
-              'sec-ch-ua-mobile' => '?0',
-              'sec-ch-ua-platform' => '"Windows"'
+              'Accept-Language' => 'uk-UA,uk;q=0.9',
+              'sec-ch-ua-platform' => '"Windows"',
+              'sec-ch-ua-mobile' => '?0'
             }
           )
 
@@ -50,6 +51,13 @@ module Scrapers
           target_audience = target_audience&.to_sym || :men
           target_url = URLS[target_audience]
           puts "--- Navigating to #{target_audience.capitalize} Catalog ---"
+
+          if page.title.include?("Just a moment") || page.locator("text=Human verification").count > 0
+            puts "!!! CLOUDFLARE BLOCK DETECTED !!!"
+            page.screenshot(path: 'block_error.png')
+            browser.close
+            return []
+          end
 
           page.mouse.move(rand(0..500), rand(0..500))
           page.goto(target_url)

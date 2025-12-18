@@ -74,35 +74,12 @@ ActiveAdmin.register Search do
       column span: 1 do
         panel "Search Criteria (Filters)" do
           attributes_table_for search do
-            row :brands do |s|
-              s.brands.map { |b| span(b.name, class: "status_tag") }.join(" ").html_safe
-            end
-            row :categories do |s|
-              s.categories.map { |c| span(c.name, class: "status_tag yes") }.join(" ").html_safe
-            end
-            row :sizes do |s|
-              s.sizes.map { |sz| span(sz.name, class: "status_tag") }.join(" ").html_safe
-            end
-            row :colors do |s|
-              s.colors.map { |c| span(c.name, style: "border-bottom: 2px solid #{c.hex_code rescue '#000'}") }.join(", ").html_safe
-            end
+            row :brands
+            row :categories
+            row :sizes
+            row :colors
             row :target_audiences do |s|
               s.target_audiences.map(&:name).join(", ")
-            end
-          end
-        end
-      end
-
-      # Права колонка - Технічні дані
-      column span: 1 do
-        panel "Technical Data" do
-          attributes_table_for search do
-            row "Raw Results (JSON)" do |s|
-              # Ми обгортаємо pre в div або стилізуємо сам pre
-              # max-height: 500px -> обмежує висоту
-              # overflow: auto -> додає скрол, якщо контент більший за висоту
-              pre JSON.pretty_generate(s.results),
-                  style: "background: #f4f4f4; padding: 10px; border-radius: 4px; max-height: 500px; overflow: auto;"
             end
           end
         end
@@ -112,7 +89,7 @@ ActiveAdmin.register Search do
     # Відображення знайденого взуття (через асоціацію shoes)
     panel "Associated Shoes Results (#{search.shoes.count})" do
       table_for search.shoes.includes(:brand) do
-        column :id
+        column id
         column :image do |shoe|
           if shoe.images&.first
             image_tag shoe.images.first, width: 50, height: 50, style: "object-fit: cover; border-radius: 4px;"
@@ -121,9 +98,15 @@ ActiveAdmin.register Search do
         column :name do |shoe|
           link_to shoe.name, admin_shoe_path(shoe)
         end
+        column :product_url do |shoe|
+          link_to shoe.product_url
+        end
         column :brand
+        column :category
+        column :size
+        column :color
         column :price do |shoe|
-          number_to_currency(shoe.price / 100.0, unit: "₴")
+          number_to_currency(shoe.price, unit: "₴")
         end
       end
     end
