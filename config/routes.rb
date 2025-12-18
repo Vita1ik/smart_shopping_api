@@ -44,7 +44,7 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :searches, only: [:create]
+      resources :searches, only: [:create, :index]
     end
   end
 end

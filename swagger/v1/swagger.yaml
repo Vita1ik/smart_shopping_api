@@ -217,6 +217,56 @@ paths:
         '401':
           description: unauthorized
   "/api/v1/searches":
+    get:
+      summary: list searches
+      tags:
+      - Searches
+      security:
+      - Bearer: []
+      description: Returns a list of the current user's searches with simplified filter
+        names.
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    price_min:
+                      type: integer
+                      nullable: true
+                    price_max:
+                      type: integer
+                      nullable: true
+                    brands:
+                      type: array
+                      items:
+                        type: string
+                    sizes:
+                      type: array
+                      items:
+                        type: string
+                    colors:
+                      type: array
+                      items:
+                        type: string
+                    categories:
+                      type: array
+                      items:
+                        type: string
+                    target_audiences:
+                      type: array
+                      items:
+                        type: string
+                  required:
+                  - id
+        '401':
+          description: unauthorized
     post:
       summary: Create a new search and start scraping
       tags:

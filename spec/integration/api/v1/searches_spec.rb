@@ -1,7 +1,57 @@
 require 'swagger_helper'
 
 RSpec.describe 'Api::V1::Searches', type: :request do
+  require 'swagger_helper'
+
   path '/api/v1/searches' do
+    get('list searches') do
+      tags 'Searches'
+      security [Bearer: []]
+      produces 'application/json'
+      description 'Returns a list of the current user\'s searches with simplified filter names.'
+
+      response(200, 'successful') do
+        schema type: :array,
+               items: {
+                 type: :object,
+                 properties: {
+                   id: { type: :integer },
+                   price_min: { type: :integer, nullable: true },
+                   price_max: { type: :integer, nullable: true },
+
+                   # Filters now return arrays of strings (names)
+                   brands: {
+                     type: :array,
+                     items: { type: :string }
+                   },
+                   sizes: {
+                     type: :array,
+                     items: { type: :string }
+                   },
+                   colors: {
+                     type: :array,
+                     items: { type: :string }
+                   },
+                   categories: {
+                     type: :array,
+                     items: { type: :string }
+                   },
+                   target_audiences: {
+                     type: :array,
+                     items: { type: :string }
+                   }
+                 },
+                 required: %w[id]
+               }
+
+        run_test!
+      end
+
+      response(401, 'unauthorized') do
+        run_test!
+      end
+    end
+    
     post('Create a new search and start scraping') do
       tags 'Searches'
       description 'Creates a search record and triggers a background Sidekiq job to scrape shoes.'

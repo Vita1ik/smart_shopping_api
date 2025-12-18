@@ -4,7 +4,7 @@ module Api
       before_action :authenticate_user!
 
       def index
-        render_ok(current_user.searches)
+        render_ok(current_user.searches.with_filters.map { ::Presenters::Search.new(_1).as_json })
       end
 
       def create

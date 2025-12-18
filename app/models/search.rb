@@ -7,6 +7,8 @@ class Search < ApplicationRecord
   has_and_belongs_to_many :categories
   has_and_belongs_to_many :target_audiences
   has_and_belongs_to_many :shoes
+
+  scope :with_filters, -> { includes(:brands, :sizes, :colors, :categories, :target_audiences) }
 end
 
 # == Schema Information
