@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_12_16_110841) do
+ActiveRecord::Schema[7.2].define(version: 2025_12_18_152746) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -138,6 +138,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_12_16_110841) do
     t.string "integration_type", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "image_url"
   end
 
   create_table "target_audiences", force: :cascade do |t|
@@ -170,6 +171,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_12_16_110841) do
     t.boolean "discounted"
     t.integer "current_price"
     t.integer "prev_price"
+    t.boolean "visited_discounted_from_email"
     t.index ["shoe_id"], name: "index_users_shoes_on_shoe_id"
     t.index ["user_id", "shoe_id"], name: "index_users_shoes_on_user_id_and_shoe_id", unique: true
     t.index ["user_id"], name: "index_users_shoes_on_user_id"

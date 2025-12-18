@@ -12,6 +12,7 @@ class SaleMonitoringJob
 
     if user_shoe.current_price > price
       user_shoe.discount!(price)
+      UserMailer.discount_alert(user_shoe.user, user_shoe.shoe, current_price).deliver_later
     else
       SaleMonitoringJob.perform_in(24.hours, user_shoe_id)
     end

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+</head>
+<body>
+<h2>Good news, <%= @user.first_name %>!</h2>
+
+<p>
+  We found a discount for a shoe you are tracking.
+  The price for <strong><%= @shoe.name %></strong> has dropped!
+</p>
+
+<div style="border: 1px solid #ddd; padding: 15px; border-radius: 5px; max-width: 500px;">
+  <% if @shoe.images.present? %>
+    <img src="<%= @shoe.images.first %>" alt="<%= @shoe.name %>" style="width: 100%; max-width: 200px; height: auto;">
+  <% end %>
+
+  <h3><%= @shoe.name %></h3>
+
+  <p style="font-size: 16px;">
+    <span style="text-decoration: line-through; color: #888;">$<%= @previous_price %></span>
+    <strong style="color: #e74c3c; font-size: 20px;">$<%= @current_price %></strong>
+  </p>
+
+  <p>You save: <strong>$<%= @savings %></strong> (<%= @percentage %>%)</p>
+
+  <div style="margin-top: 20px;">
+    <a href="<%= @shoe.product_url %>" style="background-color: #3498db; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px;">
+      Buy Now
+    </a>
+  </div>
+</div>
+</body>
+</html>

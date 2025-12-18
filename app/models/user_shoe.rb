@@ -23,15 +23,16 @@ end
 #
 # Table name: users_shoes
 #
-#  id            :bigint           not null, primary key
-#  current_price :integer
-#  discounted    :boolean
-#  liked         :boolean          default(FALSE), not null
-#  prev_price    :integer
-#  created_at    :datetime         not null
-#  updated_at    :datetime         not null
-#  shoe_id       :bigint           not null
-#  user_id       :bigint           not null
+#  id                            :bigint           not null, primary key
+#  current_price                 :integer
+#  discounted                    :boolean
+#  liked                         :boolean          default(FALSE), not null
+#  prev_price                    :integer
+#  visited_discounted_from_email :boolean
+#  created_at                    :datetime         not null
+#  updated_at                    :datetime         not null
+#  shoe_id                       :bigint           not null
+#  user_id                       :bigint           not null
 #
 # Indexes
 #

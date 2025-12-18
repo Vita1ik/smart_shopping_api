@@ -1,0 +1,11 @@
+Price Drop Alert!
+
+Good news, <%= @user.email %>!
+
+The price for <%= @shoe.name %> has dropped.
+
+Previous Price: $<%= @previous_price %>
+Current Price:  $<%= @current_price %>
+You save:       $<%= @savings %>
+
+Check it out here: <%= @shoe.product_url %>

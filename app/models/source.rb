@@ -8,6 +8,7 @@ end
 # Table name: sources
 #
 #  id               :bigint           not null, primary key
+#  image_url        :string
 #  integration_type :string           not null
 #  name             :string           not null
 #  created_at       :datetime         not null
