@@ -23,11 +23,11 @@ module Api
             cached: true, # Можна додати прапорець для фронтенду
             id: existing_result.id,
             shoe_id: existing_result.shoe_id,
-            url: url_for(existing_result.image)
+            url: existing_result.image.url
           }, status: :ok
         end
 
-        human_url = url_for(original_photo.image)
+        human_url = original_photo.image.url
         shoe_url = shoe.images.first
 
         generated_image_io = TryShoes.new(human_url: human_url, shoe_url: shoe_url).call
@@ -46,7 +46,7 @@ module Api
               success: true,
               id: result_photo.id,
               shoe_id: result_photo.shoe_id,
-              url: url_for(result_photo.image)
+              url: result_photo.image.url
             }, status: :created
           else
             render json: { errors: result_photo.errors.full_messages }, status: :unprocessable_entity
@@ -80,7 +80,7 @@ module Api
       def photo_response(photo)
         {
           id: photo.id,
-          url: url_for(photo.image), # Генерує посилання на файл
+          url: photo.image.url, # Генерує посилання на файл
           shoe_id: photo.shoe_id,
           created_at: photo.created_at
         }

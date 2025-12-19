@@ -98,7 +98,7 @@ ActiveAdmin.register User do
                 div style: "text-align: center;" do
                   if photo.image.attached?
                     # Відображаємо картинку
-                    span link_to image_tag(photo.image, style: "width: 100%; height: 150px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd;"), url_for(photo.image), target: "_blank"
+                    span link_to image_tag(photo.image, style: "width: 100%; height: 150px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd;"), photo.image.url, target: "_blank"
                   end
                 end
               end
@@ -121,7 +121,7 @@ ActiveAdmin.register User do
                 div style: "border: 1px solid #eee; border-radius: 8px; overflow: hidden; background: #fff;" do
                   # Картинка-результат
                   if photo.image.attached?
-                    img(src: url_for(photo.image), style: "width: 100%; height: 200px; object-fit: cover;")
+                    img(src: photo.image.url, style: "width: 100%; height: 200px; object-fit: cover;")
                   end
 
                   # Інформація про взуття
