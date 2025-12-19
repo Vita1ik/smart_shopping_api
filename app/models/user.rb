@@ -8,6 +8,7 @@ class User < ApplicationRecord
 
   has_many :user_shoes, dependent: :destroy
   has_many :shoes, through: :user_shoes
+  has_many :user_photos, dependent: :destroy
 
   has_many :liked_shoes, -> { where(users_shoes: { liked: true }) }, through: :user_shoes, source: :shoe
 

@@ -36,6 +36,9 @@ Rails.application.routes.draw do
       resources :categories, only: [:index]
       resources :colors, only: [:index]
       resources :sizes, only: [:index]
+      resources :user_photos, only: [:index, :create, :destroy] do
+        post :try_on_shoe
+      end
       resources :shoes, only: [:index] do
         post :like
         post :dislike

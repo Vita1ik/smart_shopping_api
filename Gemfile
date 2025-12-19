@@ -53,8 +53,6 @@ gem 'redis'
 gem 'resend'
 gem 'faraday'
 gem 'multipart-post'
-gem 'image_processing'
-gem 'mini_magick'
 gem 'googleauth'
 
 group :development, :test do

@@ -61,12 +61,15 @@ ActiveAdmin.register User do
   end
 
   # --- SHOW PAGE ---
+  # --- SHOW PAGE ---
   show do
-    # Верхня частина - інформація про юзера
+    # 1. Основна інформація
     panel "User Profile" do
       attributes_table_for user do
         row :avatar do |u|
-          image_tag(u.avatar, style: "width: 100px; border-radius: 8px;") if u.avatar.present?
+          if u.avatar.present?
+            image_tag(u.avatar, style: "width: 100px; border-radius: 8px; object-fit: cover;")
+          end
         end
         row :email
         row :full_name do |u|
@@ -80,19 +83,82 @@ ActiveAdmin.register User do
       end
     end
 
+    # 2. Блок фотографій (Virtual Try-On)
+    # Ми розділяємо їх на дві колонки: завантажені юзером та згенеровані AI
     columns do
-      # Ліва колонка - Лайкнуте взуття (Gallery)
+      # Колонка А: Оригінальні фото користувача
+      column span: 1 do
+        panel "Uploaded Photos (Sources)" do
+          # Вибираємо фото, де НЕМАЄ shoe_id
+          source_photos = user.user_photos.where(shoe_id: nil).with_attached_image
+
+          if source_photos.any?
+            div style: "display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 15px;" do
+              source_photos.each do |photo|
+                div style: "text-align: center;" do
+                  if photo.image.attached?
+                    # Відображаємо картинку
+                    span link_to image_tag(photo.image, style: "width: 100%; height: 150px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd;"), url_for(photo.image), target: "_blank"
+                  end
+                end
+              end
+            end
+          else
+            div "No uploaded photos.", style: "color: #888; padding: 20px; text-align: center;"
+          end
+        end
+      end
+
+      # Колонка Б: Результати примірки
+      column span: 2 do # Робимо цю колонку ширшою
+        panel "Virtual Try-On History (Generated)" do
+          # Вибираємо фото, де Є shoe_id, і підвантажуємо взуття для швидкості
+          generated_photos = user.user_photos.where.not(shoe_id: nil).includes(:shoe).with_attached_image.order(created_at: :desc)
+
+          if generated_photos.any?
+            div style: "display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px;" do
+              generated_photos.each do |photo|
+                div style: "border: 1px solid #eee; border-radius: 8px; overflow: hidden; background: #fff;" do
+                  # Картинка-результат
+                  if photo.image.attached?
+                    img(src: url_for(photo.image), style: "width: 100%; height: 200px; object-fit: cover;")
+                  end
+
+                  # Інформація про взуття
+                  div style: "padding: 10px; font-size: 12px; border-top: 1px solid #eee;" do
+                    if photo.shoe
+                      div style: "font-weight: bold; margin-bottom: 4px;" do
+                        link_to photo.shoe.name, admin_shoe_path(photo.shoe)
+                      end
+                      div number_to_currency(photo.shoe.price, unit: "₴", precision: 0), style: "color: #666;"
+                    else
+                      span "Shoe deleted", style: "color: red;"
+                    end
+                    div style: "color: #999; font-size: 10px; margin-top: 5px;" do
+                      l(photo.created_at, format: :short)
+                    end
+                  end
+                end
+              end
+            end
+          else
+            div "No generated images yet.", style: "color: #888; padding: 20px; text-align: center;"
+          end
+        end
+      end
+    end
+
+    # 3. Нижній блок (Лайки та Пошук)
+    columns do
+      # Ліва колонка - Лайкнуте взуття
       column span: 1 do
         panel "Liked Shoes (#{user.liked_shoes.count})" do
           if user.liked_shoes.any?
             div style: "display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; max-height: 400px; overflow-y: auto; padding: 10px;" do
               user.liked_shoes.includes(:brand).each do |shoe|
                 div style: "border: 1px solid #eee; border-radius: 6px; overflow: hidden; text-align: center;" do
-                  if shoe.images&.first
-                    img src: shoe.images.first, style: "width: 100px; border-radius: 8px;"
-                  else
-                    div "No Img", style: "height: 80px; line-height: 80px; background: #f9f9f9; color: #ccc;"
-                  end
+                  img src: shoe.images.first, style: "width: 100px; height: 100px; object-fit: cover;"
+
                   div style: "padding: 5px; font-size: 11px;" do
                     div link_to shoe.name, admin_shoe_path(shoe)
                     div shoe.brand&.name, style: "color: #888; text-transform: uppercase; font-size: 9px;"
@@ -111,8 +177,13 @@ ActiveAdmin.register User do
       column span: 1 do
         panel "Recent Searches (#{user.searches.count})" do
           table_for user.searches.order(created_at: :desc).limit(10) do
-            column "id", :id
-            column "Date", :created_at
+            column "Date" do |s|
+              l(s.created_at, format: :short)
+            end
+            column "Query/Filters" do |s|
+              # Приклад виводу деталей пошуку, якщо вони є
+              s.try(:query) || "Filter search"
+            end
             column "Actions" do |s|
               link_to "View", admin_search_path(s)
             end

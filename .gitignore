@@ -43,3 +43,13 @@ config/environments/*.local.yml
 # ops
 charts/
 .terraform
+
+# Ігноруємо завантажені файли в папці storage
+/storage/*
+
+# Але залишаємо файл .keep, щоб папка існувала в репозиторії (Git не бачить пусті папки)
+!/storage/.keep
+
+# Також ігноруємо тимчасове сховище (для тестів)
+/tmp/storage/*
+!/tmp/storage/.keep

@@ -605,6 +605,160 @@ paths:
                   - name
         '401':
           description: unauthorized
+  "/api/v1/user_photos":
+    get:
+      summary: list user_photos
+      tags:
+      - User Photos
+      security:
+      - Bearer: []
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    url:
+                      type: string
+                    shoe_id:
+                      type: integer
+                    created_at:
+                      type: string
+                      format: date_time
+                  required:
+                  - id
+                  - url
+        '401':
+          description: unauthorized
+    post:
+      summary: create user_photo
+      tags:
+      - User Photos
+      security:
+      - Bearer: []
+      parameters: []
+      responses:
+        '201':
+          description: created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  url:
+                    type: string
+                  created_at:
+                    type: string
+                    format: date_time
+                required:
+                - id
+                - url
+        '422':
+          description: unprocessable entity
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: file
+                  description: Image file to upload
+  "/api/v1/user_photos/{id}":
+    parameters:
+    - name: id
+      in: path
+      description: id
+      required: true
+      schema:
+        type: string
+    delete:
+      summary: delete user_photo
+      tags:
+      - User Photos
+      security:
+      - Bearer: []
+      responses:
+        '204':
+          description: no content
+        '404':
+          description: not found
+  "/api/v1/user_photos/{user_photo_id}/try_on_shoe":
+    parameters:
+    - name: user_photo_id
+      in: path
+      description: ID of the user photo to use as a model
+      required: true
+      schema:
+        type: string
+    post:
+      summary: try_on_shoe
+      tags:
+      - User Photos
+      security:
+      - Bearer: []
+      parameters: []
+      responses:
+        '201':
+          description: image generated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  id:
+                    type: integer
+                    description: ID of the new generated photo
+                  shoe_id:
+                    type: integer
+                  url:
+                    type: string
+                    description: URL of the generated result
+                required:
+                - success
+                - id
+                - url
+        '400':
+          description: bad request / failed to generate
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '404':
+          description: resource not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '422':
+          description: unprocessable entity
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                shoe_id:
+                  type: integer
+                  description: ID of the shoe to try on
+              required:
+              - shoe_id
   "/api/v1/user":
     get:
       summary: Get current user profile
