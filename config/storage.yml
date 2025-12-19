@@ -9,7 +9,7 @@ local:
 google:
   service: GCS
   project: "smart-shopping-api" # Ваш ID проекту
-  credentials: <%= ENV['GOOGLE_CREDENTIALS_JSON'] %> # Ми передамо JSON через ENV
+  credentials: <%= JSON.parse(ENV.fetch("GOOGLE_CREDENTIALS_JSON")) %>
   bucket: "smart-shopping-prod-storage"
 
 # Use bin/rails credentials:edit to set the AWS secrets (as aws:access_key_id|secret_access_key)
