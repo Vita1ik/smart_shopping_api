@@ -54,6 +54,7 @@ gem 'resend'
 gem 'faraday'
 gem 'multipart-post'
 gem 'googleauth'
+gem "google-cloud-storage", "~> 1.45", require: false
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

@@ -6,10 +6,8 @@ require "tempfile"
 require "open-uri"
 
 class TryShoes
-  # Використовуємо спеціалізовану модель VTON
   MODEL_ID = "virtual-try-on-preview-08-04"
-
-  PROJECT_ID = 'smart-shopping-api' || ENV.fetch("GCP_PROJECT_ID")
+  PROJECT_ID = 'smart-shopping-api'
   REGION     = 'us-central1'
 
   def initialize(human_url:, shoe_url:)
