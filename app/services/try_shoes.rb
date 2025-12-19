@@ -53,6 +53,21 @@ class TryShoes
 
   def fetch_access_token
     scopes = ['https://www.googleapis.com/auth/cloud-platform']
+    if ENV["GOOGLE_CREDENTIALS_JSON"].present?
+      require "stringio" # На всяк випадок
+
+      # Перетворюємо рядок JSON у Хеш
+      creds_hash = JSON.parse(ENV["GOOGLE_CREDENTIALS_JSON"])
+
+      # Створюємо авторизатор з хешу (без файлів!)
+      authorizer = Google::Auth::ServiceAccountCredentials.make_creds(
+        json_key_io: StringIO.new(creds_hash.to_json),
+        scope: scopes
+      )
+      return authorizer.fetch_access_token!['access_token']
+    end
+
+    # Стандартний метод (для локальної розробки, де є файл)
     authorizer = Google::Auth.get_application_default(scopes)
     authorizer.fetch_access_token!['access_token']
   end
