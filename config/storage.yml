@@ -9,7 +9,7 @@ local:
 google:
   service: GCS
   project: "smart-shopping-api" # Ваш ID проекту
-  credentials: <%= JSON.parse(ENV.fetch("GOOGLE_CREDENTIALS_JSON")) %>
+  credentials: <%= ENV.fetch("GOOGLE_CREDENTIALS_JSON") %>
   bucket: "smart-shopping-prod-storage"
   public: true
 
