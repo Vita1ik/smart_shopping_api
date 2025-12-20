@@ -24,7 +24,12 @@ module Scrapers
           page.goto(target_url)
 
           if filters[:category]
-            select_category(page, filters[:category])
+            success = select_category(page, filters[:category])
+            unless success
+              puts "!!! Critical: Category '#{filters[:category]}' not found. Aborting."
+              browser.close
+              return []
+            end
           end
 
           show_all_filters(page)
@@ -34,7 +39,12 @@ module Scrapers
 
             category_label = FILTER_MAPPING[key]
             if category_label
-              apply_filter(page, category_label, value)
+              success = apply_filter(page, category_label, value)
+              unless success
+                puts "!!! Critical: Filter '#{key}: #{value}' failed. Aborting."
+                browser.close
+                return []
+              end
             else
               puts "Warning: Unknown filter key '#{key}'"
             end
@@ -48,7 +58,7 @@ module Scrapers
           products = scrape_products(page)
 
           puts "Found #{products.count} products."
-          puts products.first
+          puts products.first if products.any?
 
           browser.close
           return products
@@ -58,14 +68,17 @@ module Scrapers
       def select_category(page, category_name)
         puts "  > Selecting Category: '#{category_name}'"
 
-        link = page.locator(".in-category-item__link:text-is('#{category_name}')")
+        matcher = /#{Regexp.escape(category_name)}/i
+        link = page.locator(".in-category-item__link").filter(hasText: matcher).first
 
         if link.count > 0
           link.click
           page.wait_for_load_state
           puts "    - Navigated to category page."
+          return true
         else
           puts "    ! Error: Category '#{category_name}' not found."
+          return false
         end
       end
 
@@ -86,7 +99,10 @@ module Scrapers
                         .filter(has: page.locator(".in-drop-accordion__label-text:text-is('#{category_name}')"))
                         .first
 
-        return puts("    ! Error: Filter '#{category_name}' not found.") if accordion.count == 0
+        if accordion.count == 0
+          puts("    ! Error: Filter group '#{category_name}' not found.")
+          return false
+        end
 
         button = accordion.locator(".in-drop-accordion__label button.in-button").first
         content = accordion.locator(".in-drop-accordion__content")
@@ -96,21 +112,41 @@ module Scrapers
           content.wait_for(state: 'visible')
         end
 
-        checkbox = content.locator(".in-facet-item__label:text-is('#{item_name}')")
-        button_opt = content.locator("a.in-facet-option-item:text-is('#{item_name}')")
-
-        if checkbox.count > 0
-          checkbox.first.scroll_into_view_if_needed
-          checkbox.first.click
-        elsif button_opt.count > 0
-          button_opt.first.scroll_into_view_if_needed
-          button_opt.first.click
+        if category_name == "Розмір"
+          val_esc = Regexp.escape(item_name)
+          matcher = /^#{val_esc}([\.\,\s]\d|\s\d\/\d)*(?!.*-)/i
+          puts "    - Using Fuzzy Size Logic..."
         else
-          puts "    ! Error: Option '#{item_name}' not found."
-          return
+          matcher = /#{Regexp.escape(item_name)}/i
         end
 
-        page.wait_for_timeout(2500)
+        checkboxes = content.locator(".in-facet-item__label").filter(hasText: matcher).all
+        buttons    = content.locator("a.in-facet-option-item").filter(hasText: matcher).all
+
+        matches = checkboxes + buttons
+
+        if matches.empty?
+          puts "    ! Error: Option '#{item_name}' not found."
+          return false
+        end
+
+        puts "    + Found #{matches.count} matching options."
+        any_clicked = false
+
+        matches.each do |el|
+          txt = el.text_content.strip
+
+          next if category_name == "Розмір" && txt.include?("-")
+
+          puts "    -> Selecting: #{txt}"
+          el.scroll_into_view_if_needed rescue nil
+          el.click
+
+          page.wait_for_timeout(2000)
+          any_clicked = true
+        end
+
+        return any_clicked
       end
 
       def set_price_range(page, min, max)

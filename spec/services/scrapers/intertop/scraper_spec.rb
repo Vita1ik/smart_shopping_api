@@ -5,7 +5,7 @@ describe Scrapers::Intertop::Scraper do
 
   let(:brand) { create(:brand, name: 'Nike') }
   let(:size) { create(:size, name: '42') }
-  let(:color) { create(:color, name: 'червоний') }
+  let(:color) { create(:color, name: 'Чорний') }
   let(:category) { create(:category, name: 'Кросівки') }
   let(:target_audience) { create(:target_audience, name: 'men') }
 
@@ -16,7 +16,7 @@ describe Scrapers::Intertop::Scraper do
            colors: [color],
            categories: [category],
            target_audiences: [target_audience],
-           price_min: 1000,
+           price_min: 2000,
            price_max: 5000
     )
   end

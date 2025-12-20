@@ -32,11 +32,25 @@ module Scrapers
             next if [:price_min, :price_max].include?(key)
 
             selector = FILTER_MAPPING[key]
-            apply_filter(page, selector, value) if selector
+            if selector
+              success = apply_filter(page, selector, value)
+              unless success
+                puts "!!! Critical: Filter '#{key}: #{value}' failed. Aborting."
+                browser.close
+                return []
+              end
+            end
           end
+
           sleep(2)
+
           if filters[:price_min] && filters[:price_max]
-            set_price_range(page, filters[:price_min], filters[:price_max])
+            success = set_price_range(page, filters[:price_min], filters[:price_max])
+            unless success
+              puts "!!! Critical: Price filter failed. Aborting."
+              browser.close
+              return []
+            end
           end
 
           puts "--- Scraping Visible Products ---"
@@ -65,9 +79,9 @@ module Scrapers
       end
 
       def apply_filter(page, selector, item_name)
-        puts "  > Applying Filter via: #{selector}"
+        puts "  > Applying Filter via: #{selector} (Value: #{item_name})"
         header = page.locator(selector).first
-        return unless header.count > 0
+        return false unless header.count > 0
 
         begin
           header.click
@@ -83,13 +97,12 @@ module Scrapers
           page.wait_for_timeout(1000)
         end
 
-        safe_name = item_name.gsub("'", "\\'")
-
-        matching_items = page.locator("div[data-test='filterItem']:has-text('#{safe_name}')").all
+        matcher = /#{Regexp.escape(item_name)}/i
+        matching_items = page.locator("div[data-test='filterItem']").filter(hasText: matcher).all
 
         if matching_items.empty?
-          puts "    ! Error: No items found containing '#{item_name}'."
-          return
+          puts "    ! Error: No items found matching '#{item_name}'."
+          return false
         end
 
         puts "    - Found #{matching_items.size} matching options. Selecting all..."
@@ -114,6 +127,8 @@ module Scrapers
           confirm_btn.first.click
           page.wait_for_timeout(2000)
         end
+
+        return true
       end
 
       def set_price_range(page, min, max)
@@ -128,11 +143,11 @@ module Scrapers
           page.wait_for_timeout(500)
         end
 
-        if input_min.count > 0
-          puts "    - Filling Min: #{min}"
-          input_min.fill("")
-          input_min.fill(min.to_s)
-        end
+        return false unless input_min.count > 0
+
+        puts "    - Filling Min: #{min}"
+        input_min.fill("")
+        input_min.fill(min.to_s)
 
         input_max = page.locator("#PriceFilterRangeInputMax")
         if input_max.count > 0
@@ -142,15 +157,16 @@ module Scrapers
         end
 
         confirm_btn = page.locator("button[data-test='multiSelectSubmitButton']")
-
         visible_btn = confirm_btn.filter(has: page.locator("visible=true")).first
 
         if visible_btn.count > 0
           puts "    - Clicking 'Ok' for Price..."
           visible_btn.click
           page.wait_for_timeout(2500)
+          return true
         else
           puts "    ! Error: Price 'Ok' button not found."
+          return false
         end
       end
 

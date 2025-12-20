@@ -25,13 +25,18 @@ module Scrapers
           page.goto(target_url)
           page.wait_for_load_state
 
-          # 1. Apply Filters
           filters.each do |key, value|
             next if [:price_min, :price_max].include?(key)
 
             category_label = FILTER_MAPPING[key]
             if category_label
-              apply_filter(page, category_label, value)
+              success = apply_filter(page, category_label, value)
+
+              unless success
+                puts "!!! Critical: Filter '#{category_label}: #{value}' failed (No valid options found). Aborting."
+                browser.close
+                return []
+              end
             end
           end
 
@@ -53,13 +58,18 @@ module Scrapers
         end
       end
 
-      def apply_filter(page, category_name, item_name)
-        puts "  > Applying: [#{category_name}] -> #{item_name}"
+      def apply_filter(page, category_name, search_val)
+        puts "  > Applying: [#{category_name}] -> Trying to match '#{search_val}' (fuzzy)"
 
-        title_selector = ".bx-filter-parameters-box-title:has-text('#{category_name}')"
-        filter_box = page.locator(".bx-filter-parameters-box").filter(has: page.locator(title_selector)).first
+        cat_matcher = /#{Regexp.escape(category_name)}/i
+        filter_box = page.locator(".bx-filter-parameters-box")
+                         .filter(has: page.locator(".bx-filter-parameters-box-title", hasText: cat_matcher))
+                         .first
 
-        return puts("    ! Error: Filter '#{category_name}' not found.") if filter_box.count == 0
+        if filter_box.count == 0
+          puts("    ! Error: Filter group '#{category_name}' not found.")
+          return false
+        end
 
         content_block = filter_box.locator(".bx-filter-block")
         unless content_block.visible?
@@ -67,25 +77,52 @@ module Scrapers
           content_block.wait_for(state: 'visible', timeout: 5000)
         end
 
-        option_span = filter_box.locator(".bx-filter-param-text[title='#{item_name}']").first
-        option_span = filter_box.locator(".bx-filter-param-text:text-is('#{item_name}')").first if option_span.count == 0
+        val_esc = Regexp.escape(search_val)
 
-        if option_span.count > 0
-          option_span.scroll_into_view_if_needed rescue nil
-          wrapper = option_span.locator("xpath=ancestor::label").first
-          input = wrapper.locator("input[type='checkbox']")
+        fuzzy_matcher = /^#{val_esc}([\.\,\s]\d|\s\d\/\d)*(?!.*-)/i
 
-          if input.evaluate("el => el.checked")
-            puts "    - Already selected."
-          else
-            wrapper.click
+        matching_elements = filter_box.locator(".bx-filter-param-text").filter(hasText: fuzzy_matcher).all
 
-            puts "    - Waiting for Bitrix debounce..."
-            page.wait_for_timeout(1000)
-          end
-        else
-          puts "    ! Error: Option '#{item_name}' not found."
+        if matching_elements.empty?
+          puts "    ! Error: No options matched fuzzy search for '#{search_val}' (excluding ranges)."
+          return false
         end
+
+        puts "    + Found #{matching_elements.count} matching options..."
+
+        any_clicked = false
+
+        matching_elements.each do |el|
+          text_value = el.text_content.strip
+
+          next if text_value.include?("-")
+
+          puts "    -> Selecting: #{text_value}"
+
+          el.scroll_into_view_if_needed rescue nil
+          wrapper = el.locator("xpath=ancestor::label").first
+
+          if wrapper.visible?
+            input = wrapper.locator("input[type='checkbox']")
+            if input.evaluate("el => el.checked")
+              puts "       (Already selected)"
+            else
+              wrapper.click
+              # Small debounce to let UI update
+              page.wait_for_timeout(300)
+            end
+            any_clicked = true
+          else
+            puts "       (Skipping hidden/disabled option)"
+          end
+        end
+
+        if any_clicked
+          puts "    - Waiting for Bitrix debounce..."
+          page.wait_for_timeout(1500)
+        end
+
+        return any_clicked
       end
 
       def set_price_range(page, min, max)
@@ -107,20 +144,17 @@ module Scrapers
           input_min.fill("")
           input_min.type(min.to_s, delay: 50)
           page.keyboard.press("Enter")
-
           page.wait_for_timeout(1000)
 
           input_max.fill("")
           input_max.type(max.to_s, delay: 50)
           page.keyboard.press("Enter")
-
           page.wait_for_timeout(1000)
         end
       end
 
       def force_submit(page)
         puts "  > Forcing Filter Submission..."
-
         begin
           page.evaluate("setFilter()")
           page.wait_for_load_state
@@ -139,20 +173,13 @@ module Scrapers
         page.locator(".product-item").evaluate_all(<<~JS)
           tiles => tiles.map(tile => {
             const titleElement = tile.querySelector(".product-name a");
-    
             let priceElement = tile.querySelector(".price-current");
-            if (!priceElement) {
-               priceElement = tile.querySelector(".price");
-            }
-    
+            if (!priceElement) priceElement = tile.querySelector(".price");
             const imgElement = tile.querySelector(".product-img img");
     
             const title = titleElement ? titleElement.textContent.trim() : "Unknown Title";
-    
             const price = priceElement ? priceElement.textContent.trim().replace(/\\s+/g, ' ') : "";
-    
             const link = titleElement ? titleElement.href : "";
-    
             let image = imgElement ? (imgElement.src || imgElement.dataset.src) : "";
             
             if (image.startsWith("/upload")) {
