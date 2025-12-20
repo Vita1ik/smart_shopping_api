@@ -1,6 +1,6 @@
 class UserMailer < ApplicationMailer
-  # default from: 'Shoe Store <info@smartshopping.pp.ua>'
-  default from: 'onboarding@resend.dev'
+  default from: 'Shoe Store <info@smartshopping.pp.ua>'
+  # default from: 'onboarding@resend.dev'
 
   def discount_alert(user, shoe, current_price, previous_price)
     @user = user

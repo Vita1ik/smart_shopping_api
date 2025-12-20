@@ -53,3 +53,10 @@ charts/
 # Також ігноруємо тимчасове сховище (для тестів)
 /tmp/storage/*
 !/tmp/storage/.keep
+
+
+# Ignore local environment file
+.env
+.env.local
+.env.development.local
+.env.test.local

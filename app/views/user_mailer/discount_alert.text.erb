@@ -1,11 +1,22 @@
-Price Drop Alert!
+Гарні новини, <%= @user.first_name %>!
 
-Good news, <%= @user.email %>!
+Ми зафіксували зниження ціни на взуття, яке ви відстежуєте. Не пропустіть нагоду заощадити!
 
-The price for <%= @shoe.name %> has dropped.
+========================================
+<%= @shoe.name.upcase %>
+========================================
 
-Previous Price: $<%= @previous_price %>
-Current Price:  $<%= @current_price %>
-You save:       $<%= @savings %>
+Нова ціна:  $<%= @current_price %>
+Стара ціна: $<%= @previous_price %>
 
-Check it out here: <%= @shoe.product_url %>
+Ваша знижка: <%= @percentage %>% (–$<%= @savings %>)
+
+----------------------------------------
+КУПИТИ ЗАРАЗ:
+<%= format(ENV['EMAIL_REDIRECT_URL'], shoe_id: @shoe.id, user_id: @user.id) %>
+----------------------------------------
+
+Ціна може змінитися, тому радимо поспішити.
+
+--
+ShoeTracker App

@@ -68,5 +68,6 @@ group :development, :test do
   gem 'rspec-rails', '~> 6.1'
   gem 'factory_bot_rails'
   gem 'ffaker'
+  gem 'dotenv-rails'
 end
 

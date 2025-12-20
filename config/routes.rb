@@ -40,6 +40,7 @@ Rails.application.routes.draw do
         post :try_on_shoe
       end
       resources :shoes, only: [:index] do
+        get :redirect_from_email
         post :like
         post :dislike
         collection do

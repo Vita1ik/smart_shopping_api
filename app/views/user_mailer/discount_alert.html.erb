@@ -1,35 +1,104 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>Зниження ціни на <%= @shoe.name %></title>
+  <style>
+      /* Стилі для клієнтів, які підтримують media queries (наприклад, iOS Mail, сучасний Gmail app) */
+      @media only screen and (max-width: 620px) {
+          table.body h1 { font-size: 28px !important; margin-bottom: 10px !important; }
+          table.body p, table.body ul, table.body ol, table.body td, table.body span, table.body a { font-size: 16px !important; }
+          table.body .wrapper, table.body .article { padding: 10px !important; }
+          table.body .content { padding: 0 !important; }
+          table.body .container { padding: 0 !important; width: 100% !important; }
+          table.body .main { border-left-width: 0 !important; border-radius: 0 !important; border-right-width: 0 !important; }
+          table.body .img-responsive { height: auto !important; max-width: 100% !important; width: auto !important; }
+      }
+  </style>
 </head>
-<body>
-<h2>Good news, <%= @user.first_name %>!</h2>
+<body style="background-color: #f6f6f6; font-family: sans-serif; -webkit-font-smoothing: antialiased; font-size: 14px; line-height: 1.4; margin: 0; padding: 0; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%;">
 
-<p>
-  We found a discount for a shoe you are tracking.
-  The price for <strong><%= @shoe.name %></strong> has dropped!
-</p>
+<table role="presentation" border="0" cellpadding="0" cellspacing="0" class="body" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #f6f6f6; width: 100%;">
+  <tr>
+    <td style="font-family: sans-serif; font-size: 14px; vertical-align: top;">&nbsp;</td>
+    <td class="container" style="font-family: sans-serif; font-size: 14px; vertical-align: top; display: block; max-width: 580px; padding: 10px; width: 580px; margin: 0 auto;">
 
-<div style="border: 1px solid #ddd; padding: 15px; border-radius: 5px; max-width: 500px;">
-  <% if @shoe.images.present? %>
-    <img src="<%= @shoe.images.first %>" alt="<%= @shoe.name %>" style="width: 100%; max-width: 200px; height: auto;">
-  <% end %>
+      <div class="content" style="box-sizing: border-box; display: block; margin: 0 auto; max-width: 580px; padding: 10px;">
 
-  <h3><%= @shoe.name %></h3>
+        <table role="presentation" class="main" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; background: #ffffff; border-radius: 8px; width: 100%; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
 
-  <p style="font-size: 16px;">
-    <span style="text-decoration: line-through; color: #888;">$<%= @previous_price %></span>
-    <strong style="color: #e74c3c; font-size: 20px;">$<%= @current_price %></strong>
-  </p>
+          <tr>
+            <td class="wrapper" style="font-family: sans-serif; font-size: 14px; vertical-align: top; box-sizing: border-box; padding: 24px;">
 
-  <p>You save: <strong>$<%= @savings %></strong> (<%= @percentage %>%)</p>
+              <p style="font-family: sans-serif; font-size: 20px; font-weight: bold; margin: 0; margin-bottom: 15px; color: #333333;">
+                Гарні новини, <%= @user.first_name %>! 🎉
+              </p>
 
-  <div style="margin-top: 20px;">
-    <a href="<%= @shoe.product_url %>" style="background-color: #3498db; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px;">
-      Buy Now
-    </a>
-  </div>
-</div>
+              <p style="font-family: sans-serif; font-size: 16px; font-weight: normal; margin: 0; margin-bottom: 20px; color: #555555;">
+                Ми зафіксували зниження ціни на взуття, яке ви відстежуєте. Не пропустіть нагоду заощадити!
+              </p>
+
+              <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; background-color: #fbfbfb; border-radius: 8px; border: 1px solid #eeeeee;">
+                <tr>
+                  <td style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding: 20px; text-align: center;">
+
+                    <% if @shoe.images.present? %>
+                      <img src="<%= @shoe.images.first %>" alt="<%= @shoe.name %>" width="240" style="border: none; -ms-interpolation-mode: bicubic; max-width: 100%; height: auto; border-radius: 4px; margin-bottom: 15px; mix-blend-mode: multiply;">
+                    <% end %>
+
+                    <h3 style="color: #333333; font-family: sans-serif; font-weight: 600; line-height: 1.4; margin: 0; margin-bottom: 10px; font-size: 18px;">
+                      <%= @shoe.name %>
+                    </h3>
+
+                    <div style="margin-bottom: 15px;">
+                        <span style="font-size: 16px; color: #999999; text-decoration: line-through; margin-right: 10px;">
+                          $<%= @previous_price %>
+                        </span>
+                      <span style="font-size: 24px; color: #e74c3c; font-weight: bold;">
+                          $<%= @current_price %>
+                        </span>
+                    </div>
+
+                    <div style="background-color: #eafaf1; color: #27ae60; padding: 8px 12px; border-radius: 20px; display: inline-block; font-size: 14px; font-weight: bold; margin-bottom: 20px;">
+                      Знижка <%= @percentage %>% (–$<%= @savings %>)
+                    </div>
+
+                    <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%;">
+                      <tr>
+                        <td align="center" style="font-family: sans-serif; font-size: 14px; vertical-align: top;">
+                          <a href="<%= format(ENV['EMAIL_REDIRECT_URL'], shoe_id: @shoe.id, user_id: @user.id) %>" target="_blank" style="color: #ffffff; text-decoration: none; background-color: #3498db; border: solid 1px #3498db; border-radius: 5px; box-sizing: border-box; cursor: pointer; display: inline-block; font-size: 16px; font-weight: bold; margin: 0; padding: 12px 25px; text-transform: capitalize;">
+                            Купити зараз
+                          </a>
+                        </td>
+                      </tr>
+                    </table>
+
+                  </td>
+                </tr>
+              </table>
+              <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-top: 20px; color: #999999; text-align: center;">
+                Ціна може змінитися, тому радимо поспішити.
+              </p>
+
+            </td>
+          </tr>
+        </table>
+
+        <div class="footer" style="clear: both; margin-top: 10px; text-align: center; width: 100%;">
+          <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%;">
+            <tr>
+              <td class="content-block" style="font-family: sans-serif; vertical-align: top; padding-bottom: 10px; padding-top: 10px; color: #999999; font-size: 12px; text-align: center;">
+                <span class="apple-link" style="color: #999999; font-size: 12px; text-align: center;">ShoeTracker App, Ukraine</span>
+                <br> Ви отримали цей лист, бо підписалися на оновлення цін.
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </td>
+    <td style="font-family: sans-serif; font-size: 14px; vertical-align: top;">&nbsp;</td>
+  </tr>
+</table>
 </body>
 </html>

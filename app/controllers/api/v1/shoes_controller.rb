@@ -1,13 +1,22 @@
 module Api
   module V1
     class ShoesController < ApiController
-      before_action :authenticate_user!
+      before_action :authenticate_user!, except: [:redirect_from_email]
 
       # get
       def index
         shoes = ::Shoe.by_search_id(params.require(:search_id))
         result = shoes.map { Presenters::Shoe.new(_1).as_json }
         render_ok(result)
+      end
+
+      def redirect_from_email
+        shoe_id = params.require(:shoe_id)
+        user_id = params.require(:user_id)
+        user_shoe = UserShoe.find_by(user_id:, shoe_id:)
+        user_shoe.update(visited_discounted_from_email: true)
+
+        redirect_to user_shoe.shoe.product_url, allow_other_host: true
       end
 
       # post
