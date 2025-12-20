@@ -1,7 +1,7 @@
 class SaleMonitoringJob
   include Sidekiq::Job
 
-  sidekiq_options queue: :scrapers
+  sidekiq_options queue: :scrapers, retry: false
 
   def perform(user_shoe_id)
     user_shoe = UserShoe.find(user_shoe_id)
