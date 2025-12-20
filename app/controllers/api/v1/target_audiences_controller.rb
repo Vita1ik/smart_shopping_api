@@ -4,7 +4,7 @@ module Api
       before_action :authenticate_user!
 
       def index
-        render json: TargetAudience.all.map { Presenters::Base.new(_1).as_json }
+        render json: TargetAudience.all.map { { id: _1.id, name: _1.display_name } }
       end
     end
   end
